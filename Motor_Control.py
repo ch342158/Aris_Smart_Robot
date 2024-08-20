@@ -9,10 +9,9 @@ def motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     speed_J1 = speedControl(speed, 64, reduction)
     position_J1 = positionControl_J1(J1)
 
-    Send_Command.UART_sendCommand(1, acc_J1, speed_J1,position_J1)
+    final_Position_J1 = Send_Command.UART_sendCommand(1, speed_J1, acc_J1, position_J1)
 
-    print(f"motion actuate speed = {speed}")
-    return acc, speed, position_J1
+    return acc_J1, speed_J1, position_J1, final_Position_J1
 
 
 def accelerationControl(desired_acc_rad):

@@ -1,5 +1,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout, QFrame
+
+import Send_Command
 from Inverse_Calc import inverse_kinematics
 from Plot_Robot import PlotCanvas
 import Motor_Control
@@ -20,6 +22,9 @@ class MainUI(QMainWindow):
             self.ui.plot_widget.setLayout(layout)
 
         layout.addWidget(self.canvas)
+
+        # Initialize UART
+        Send_Command.UART_Init()
 
         # Main page function implementations
         # Connect the button click event to the function
@@ -92,28 +97,28 @@ class MainUI(QMainWindow):
 
         # Check if the j1_theta QLineEdit is empty
         if self.ui.j1_theta.text():
-            desiredAngle_J1 = float(self.ui.j1_theta.text())
+            desiredAngle_J1 = float(self.ui.j1_inv_theta.text())
         else:
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J1')
             return  # Exit the function if the first input is empty
 
         # Check if the j2_theta QLineEdit is empty
         if self.ui.j2_theta.text():
-            desiredAngle_J2 = float(self.ui.j2_theta.text())
+            desiredAngle_J2 = float(self.ui.j2_inv_theta.text())
         else:
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J2')
             return  # Exit the function if the second input is empty
 
         # # Check if the j3_theta QLineEdit is empty
         # if self.ui.j3_theta.text():
-        #     desiredAngle_J2 = float(self.ui.j2_theta.text())
+        #     desiredAngle_J3 = float(self.ui.j3_inv_theta.text())
         # else:
         #     QMessageBox.warning(self, 'Warning', 'Please use Solving first for J3')
         #     return  # Exit the function if the second input is empty
         #
         # # Check if the j4_theta QLineEdit is empty
         # if self.ui.j4_theta.text():
-        #     desiredAngle_J2 = float(self.ui.j2_theta.text())
+        #     desiredAngle_J4 = float(self.ui.j4_inv_theta.text())
         # else:
         #     QMessageBox.warning(self, 'Warning', 'Please use Solving first for J4')
         #     return  # Exit the function if the second input is empty
@@ -127,10 +132,12 @@ class MainUI(QMainWindow):
         elif self.ui.microStep_256.isChecked():
             desired_microStep = 256
 
-        print(Motor_Control.motionActuate(desired_speed, desired_acc, desired_microStep, desired_reduction,
-                                          desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4))
+        final_position_J1_degree = Motor_Control.motionActuate(desired_speed, desired_acc, desired_microStep, desired_reduction,
+                                          desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4)[3]/16384/3*360
 
-
+        self.ui.motor_angle_1.setText(f"{str(round(final_position_J1_degree,2))}\u00B0")
+        self.ui.motor_status_1.setText('RUN OK')
+        self.ui.motor_status_1.setStyleSheet('color: green;')
 
 
 if __name__ == '__main__':

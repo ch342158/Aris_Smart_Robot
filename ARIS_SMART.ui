@@ -9,19 +9,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1234</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>834</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1000</width>
+    <width>1200</width>
     <height>800</height>
    </size>
   </property>
@@ -30,8 +30,17 @@
     <family>Consolas</family>
     <pointsize>11</pointsize>
     <weight>75</weight>
+    <italic>false</italic>
     <bold>true</bold>
+    <underline>false</underline>
+    <strikeout>false</strikeout>
    </font>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
+  <property name="tabletTracking">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -57,14 +66,23 @@
      <number>20</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_13">
+     <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="4,4,1,12">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <property name="spacing">
          <number>10</number>
         </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -119,7 +137,7 @@
         <item>
          <widget class="QLabel" name="speed_label_inv">
           <property name="text">
-           <string>Speed (RPM)</string>
+           <string>Arm Speed (RPM)</string>
           </property>
          </widget>
         </item>
@@ -130,8 +148,14 @@
         <property name="spacing">
          <number>10</number>
         </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <item>
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
@@ -186,7 +210,7 @@
         <item>
          <widget class="QLabel" name="acc_label_inv">
           <property name="text">
-           <string>Acceleration (rad/s^2)</string>
+           <string>Arm Acc (rad/s^2)</string>
           </property>
          </widget>
         </item>
@@ -195,7 +219,7 @@
       <item>
        <widget class="QGroupBox" name="MicroStepping_GroupBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -207,9 +231,12 @@
          </size>
         </property>
         <property name="title">
-         <string>Micro-Stepping</string>
+         <string>Micro-Step</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetNoConstraint</enum>
+         </property>
          <item>
           <widget class="QRadioButton" name="microStep_32">
            <property name="text">
@@ -243,6 +270,9 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetNoConstraint</enum>
+        </property>
         <item>
          <widget class="QGroupBox" name="motor_info_1">
           <property name="title">
@@ -252,12 +282,21 @@
            <bool>false</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetNoConstraint</enum>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_3">
                <property name="spacing">
                 <number>2</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
                </property>
                <item>
                 <widget class="QLabel" name="motor_online_label_1">
@@ -294,10 +333,16 @@
                <property name="spacing">
                 <number>7</number>
                </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item>
                 <widget class="QLineEdit" name="motor_online_1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -307,13 +352,19 @@
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_angle_1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -323,13 +374,19 @@
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_status_1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -339,13 +396,19 @@
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_enabled_1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -355,6 +418,9 @@
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -364,6 +430,9 @@
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <widget class="QPushButton" name="motor_on_1">
                <property name="styleSheet">
@@ -422,12 +491,21 @@ QPushButton:pressed {
            <bool>false</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetNoConstraint</enum>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_14">
                <property name="spacing">
                 <number>2</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
                </property>
                <item>
                 <widget class="QLabel" name="motor_online_label_2">
@@ -464,10 +542,16 @@ QPushButton:pressed {
                <property name="spacing">
                 <number>7</number>
                </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item>
                 <widget class="QLineEdit" name="motor_online_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -477,13 +561,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_angle_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -493,13 +583,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_status_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -509,13 +605,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_enabled_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -525,6 +627,9 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -534,6 +639,9 @@ QPushButton:pressed {
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <widget class="QPushButton" name="motor_on_2">
                <property name="styleSheet">
@@ -592,12 +700,21 @@ QPushButton:pressed {
            <bool>false</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetNoConstraint</enum>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,1">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_17">
                <property name="spacing">
                 <number>2</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
                </property>
                <item>
                 <widget class="QLabel" name="motor_online_label_3">
@@ -634,10 +751,16 @@ QPushButton:pressed {
                <property name="spacing">
                 <number>7</number>
                </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item>
                 <widget class="QLineEdit" name="motor_online_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -647,13 +770,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_angle_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -663,13 +792,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_status_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -679,13 +814,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_enabled_3">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -695,6 +836,9 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -704,6 +848,9 @@ QPushButton:pressed {
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <widget class="QPushButton" name="motor_on_3">
                <property name="styleSheet">
@@ -762,12 +909,21 @@ QPushButton:pressed {
            <bool>false</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_28">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetNoConstraint</enum>
+           </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_21" stretch="1,1">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_29">
                <property name="spacing">
                 <number>2</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
                </property>
                <item>
                 <widget class="QLabel" name="motor_online_label_4">
@@ -804,10 +960,16 @@ QPushButton:pressed {
                <property name="spacing">
                 <number>7</number>
                </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
                <item>
                 <widget class="QLineEdit" name="motor_online_4">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -817,13 +979,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_angle_4">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -833,13 +1001,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_status_4">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -849,13 +1023,19 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="motor_enabled_4">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                  <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -865,6 +1045,9 @@ QPushButton:pressed {
                    <width>52</width>
                    <height>28</height>
                   </size>
+                 </property>
+                 <property name="readOnly">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
@@ -874,6 +1057,9 @@ QPushButton:pressed {
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_22">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item>
               <widget class="QPushButton" name="motor_on_4">
                <property name="styleSheet">
@@ -949,7 +1135,10 @@ QPushButton:pressed {
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
       <item>
        <widget class="QWidget" name="plot_widget" native="true">
         <property name="sizePolicy">
@@ -972,22 +1161,40 @@ QPushButton:pressed {
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
           <string>Inverse</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
               <property name="sizeConstraint">
-               <enum>QLayout::SetMaximumSize</enum>
+               <enum>QLayout::SetNoConstraint</enum>
               </property>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
                 <item>
                  <widget class="QLabel" name="x_label_inv">
                   <property name="font">
@@ -1034,7 +1241,7 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="z_label_inv_3">
+                 <widget class="QLabel" name="r_label_inv">
                   <property name="font">
                    <font>
                     <family>Consolas</family>
@@ -1052,17 +1259,20 @@ QPushButton:pressed {
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
                 <item>
                  <widget class="QLineEdit" name="desired_x">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1079,14 +1289,14 @@ QPushButton:pressed {
                 <item>
                  <widget class="QLineEdit" name="desired_y">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1103,14 +1313,14 @@ QPushButton:pressed {
                 <item>
                  <widget class="QLineEdit" name="desired_z">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1127,14 +1337,14 @@ QPushButton:pressed {
                 <item>
                  <widget class="QLineEdit" name="desired_rotation">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1193,7 +1403,7 @@ QPushButton:pressed {
                 <property name="font">
                  <font>
                   <family>Agency FB</family>
-                  <pointsize>58</pointsize>
+                  <pointsize>18</pointsize>
                   <weight>75</weight>
                   <bold>true</bold>
                  </font>
@@ -1221,10 +1431,13 @@ QPushButton:pressed {
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1">
               <property name="sizeConstraint">
-               <enum>QLayout::SetMaximumSize</enum>
+               <enum>QLayout::SetNoConstraint</enum>
               </property>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
                 <item>
                  <widget class="QLabel" name="x_label_inv_2">
                   <property name="font">
@@ -1289,17 +1502,20 @@ QPushButton:pressed {
               </item>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_2">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
                 <item>
-                 <widget class="QLineEdit" name="j1_theta">
+                 <widget class="QLineEdit" name="j1_inv_theta">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1314,16 +1530,16 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="j2_theta">
+                 <widget class="QLineEdit" name="j2_inv_theta">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1338,16 +1554,16 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="j3_theta">
+                 <widget class="QLineEdit" name="j3_inv_theta">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1362,16 +1578,16 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="j4_theta">
+                 <widget class="QLineEdit" name="j4_inv_theta">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>50</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1404,12 +1620,601 @@ QPushButton:pressed {
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QTextBrowser" name="inv_status">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>527</width>
+              <height>93</height>
+             </size>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="title">
           <string>Direct</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_25">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_24">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_15" stretch="1,3,1">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetNoConstraint</enum>
+              </property>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_19">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
+                <item>
+                 <widget class="QLabel" name="j1_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>J1 (ARM1) Theta:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="j2_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>J2 (ARM2) Theta:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="j3_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>J3 (Height) Angle:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="j4_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>J4 (Rotation) Angle:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_21">
+                <item>
+                 <widget class="QSlider" name="j1_desired_theta">
+                  <property name="pageStep">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="invertedAppearance">
+                   <bool>false</bool>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksAbove</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="j2_desired_theta">
+                  <property name="pageStep">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="invertedAppearance">
+                   <bool>false</bool>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksAbove</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="j3_desired_theta">
+                  <property name="pageStep">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="invertedAppearance">
+                   <bool>false</bool>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksAbove</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="j4_desired_theta">
+                  <property name="pageStep">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="invertedAppearance">
+                   <bool>false</bool>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksAbove</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_20">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
+                <item>
+                 <widget class="QLineEdit" name="j1_dir_theta">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="j2_dir_theta">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="j3_dir_theta">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="j4_dir_theta">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetNoConstraint</enum>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="font">
+                 <font>
+                  <family>Agency FB</family>
+                  <pointsize>18</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>↓</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="1,1">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetNoConstraint</enum>
+              </property>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_22">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
+                <item>
+                 <widget class="QLabel" name="x_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Result X Coordinate:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="y_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Result Y Coordinate:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="z_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Result Z Coordinate:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="r_label_dir">
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>10</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Result Rotation:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_23">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetNoConstraint</enum>
+                </property>
+                <item>
+                 <widget class="QLineEdit" name="result_x">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="result_y">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="result_z">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="result_rotation">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Consolas</family>
+                    <pointsize>9</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTextBrowser" name="dir_status">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>527</width>
+              <height>93</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Manual</string>
+         </attribute>
+         <widget class="QTextBrowser" name="inv_status_3">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>300</y>
+            <width>529</width>
+            <height>93</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>527</width>
+            <height>93</height>
+           </size>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <attribute name="title">
+          <string>Programmed</string>
+         </attribute>
+         <widget class="QTextBrowser" name="inv_status_4">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>320</y>
+            <width>529</width>
+            <height>93</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>527</width>
+            <height>93</height>
+           </size>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="tab_5">
+         <attribute name="title">
+          <string>Guided</string>
+         </attribute>
+         <widget class="QTextBrowser" name="inv_status_5">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>330</y>
+            <width>529</width>
+            <height>93</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>527</width>
+            <height>93</height>
+           </size>
+          </property>
+         </widget>
         </widget>
        </widget>
       </item>
@@ -1422,8 +2227,8 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1234</width>
-     <height>28</height>
+     <width>1200</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
