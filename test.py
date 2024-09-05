@@ -1,43 +1,54 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
-from PyQt6.QtCore import QSize
+import panda
+import plotly.graph_objs as go
+import plotly.express as px
+from dash import Dash, dcc, html, Input, Output
 
-class CustomButtonDemo(QMainWindow):
-    def __init__(self):
-        super().__init__()
+app = Dash(__name__)
 
-        self.setWindowTitle('Custom Push Button Demo')
-        self.setGeometry(100, 100, 300, 200)
+# Initial position of the tool end
+initial_x, initial_y = 234.05, -10.92
 
-        # Create a QPushButton
-        button = QPushButton('ON', self)
-        button.setFixedSize(100, 100)  # Set the size of the button
+app.layout = html.Div([
+    dcc.Graph(id='interactive-graph', config={'editable': True}),
+    html.P(id='coordinates-output', children=f"Initial Coordinates: ({initial_x}, {initial_y})")
+])
 
-        # Apply a stylesheet to make the button look like the image
-        button.setStyleSheet("""
-            QPushButton {
-                background-color: #00C851;
-                border-radius: 50px;  /* Circular shape */
-                color: white;
-                font-size: 20px;
-                font-weight: bold;
-                border: 5px solid #888;
-            }
-            QPushButton:pressed {
-                background-color: #007E33;
-            }
-        """)
 
-        # Set up the layout and central widget
-        central_widget = QWidget()
-        layout = QVBoxLayout()
-        layout.addWidget(button)
-        central_widget.setLayout(layout)
+@app.callback(
+    Output('interactive-graph', 'figure'),
+    Output('coordinates-output', 'children'),
+    Input('interactive-graph', 'relayoutData')
+)
+def update_figure(relayout_data):
+    if relayout_data and 'shapes[0].x0' in relayout_data:
+        new_x = relayout_data['shapes[0].x0']
+        new_y = relayout_data['shapes[0].y0']
+    else:
+        new_x, new_y = initial_x, initial_y
 
-        self.setCentralWidget(central_widget)
+    fig = go.Figure()
+
+    # Plot the tool end point
+    fig.add_trace(go.Scatter(x=[new_x], y=[new_y], mode='markers', marker=dict(color='red', size=10)))
+
+    # Add draggable shape
+    fig.update_layout(
+        shapes=[
+            dict(
+                type="circle",
+                x0=new_x - 5, y0=new_y - 5, x1=new_x + 5, y1=new_y + 5,
+                xref="x", yref="y",
+                line_color="red"
+            )
+        ]
+    )
+
+    fig.update_xaxes(range=[-400, 400])
+    fig.update_yaxes(range=[-300, 300])
+    fig.update_layout(title='Drag the red dot', dragmode='drawopenpath')
+
+    return fig, f"New Coordinates: ({new_x:.2f}, {new_y:.2f})"
+
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = CustomButtonDemo()
-    demo.show()
-    sys.exit(app.exec())
+    app.run_server(debug=True)

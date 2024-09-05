@@ -17,9 +17,9 @@ if ser.is_open:
 try:
     # Example: Send command with slaveAddr=1, speed=60, acc=30, axis=4000
     slaveAddr = 1
-    speed = 1600
+    speed = 900
     acc = 225
-    axis = 0
+    axis =168300
 
     command = f"{slaveAddr} {speed} {acc} {axis}\n"
     ser.write(command.encode())
@@ -36,8 +36,8 @@ try:
 except KeyboardInterrupt:
     print("Program interrupted by the user")
 
-# finally:
-#     # Close the serial port
-#     ser.close()
-#     print("Serial port closed")
+finally:
+    # Close the serial port
+    ser.close()
+    print("Serial port closed")
 

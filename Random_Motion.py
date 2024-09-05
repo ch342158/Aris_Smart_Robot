@@ -20,9 +20,9 @@ try:
     while True:
         # Example: Send command with slaveAddr=1, speed=2000, acc=160, axis=random value
         slaveAddr = 1
-        speed = 2400
+        speed = 90
         acc = 220
-        axis = random.randint(-4096, 4096)
+        axis = random.randint(-40960, 40960)
         # axis = 0
 
         command = f"{slaveAddr} {speed} {acc} {axis}\n"

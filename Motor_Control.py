@@ -1,6 +1,6 @@
 import math
 import Send_Command
-
+import time
 
 # this program prepares the data to be sent to the edge stm32 controller to control the motor drivers
 
@@ -9,9 +9,18 @@ def motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     speed_J1 = speedControl(speed, 64, reduction)
     position_J1 = positionControl_J1(J1)
 
-    final_Position_J1 = Send_Command.UART_sendCommand(1, speed_J1, acc_J1, position_J1)
+    acc_J2 = accelerationControl(acc)
+    speed_J2 = speedControl(speed, 64, reduction)
+    position_J2 = positionControl_J2(J2)
 
-    return acc_J1, speed_J1, position_J1, final_Position_J1
+    final_Position_J1 = 0
+    final_Position_J2 = 0
+
+    Send_Command.UART_sendCommand(1, speed_J1, acc_J1, position_J1)
+    time.sleep(0.1)  # Small delay
+    Send_Command.UART_sendCommand(2, speed_J2, acc_J2, position_J2)
+
+    return acc_J1, speed_J1, position_J1, acc_J2, speed_J2, position_J2, final_Position_J1, final_Position_J2
 
 
 def accelerationControl(desired_acc_rad):
