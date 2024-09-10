@@ -59,7 +59,8 @@ class MainUI(QMainWindow):
         self.ui.dir_check_pb.clicked.connect(self.dir_getCoordinateNPlot)
         self.setup_joint_controls()
 
-
+        ################### Manual Control ###################
+        # self.ui.man_j1_plus.pressed.connect(self.handle_manual_tab)
 
     def setup_joint_controls(self):
         dir_ranges = [
@@ -122,7 +123,6 @@ class MainUI(QMainWindow):
             *result['border_points']
         )
 
-
     def run(self):
         if not self.comport_open:
             self.show_message_box("USB Port is not OPEN!", "Serial Port Error")
@@ -144,7 +144,7 @@ class MainUI(QMainWindow):
         tab_handlers = {
             0: self.handle_inverse_tab,
             1: self.handle_direct_tab,
-            2: self.handle_manual_tab,
+            #2: self.handle_manual_tab,
             3: self.handle_programmed_tab,
             4: self.handle_guided_tab
         }
@@ -169,6 +169,11 @@ class MainUI(QMainWindow):
         Motor_Control.motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
 
     # Define other tab handlers here (manual, programmed, guided)
+
+    def handle_manual_tab(self):
+
+        pass
+
 
     def on_tab_changed(self, new_tab_mode):
         self.current_tab_mode = new_tab_mode
