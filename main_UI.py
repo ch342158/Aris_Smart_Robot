@@ -1,4 +1,5 @@
 from PyQt6 import uic
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout
 from math import radians
 
@@ -7,6 +8,8 @@ from Inverse_Calc import inverse_kinematics
 from Direct_Calc import direct_kinematics
 from Plot_Robot import PlotCanvas
 import Motor_Control
+
+
 
 ARM1_LENGTH = 120  # Constants for the robot's arms
 ARM2_LENGTH = 270
@@ -44,7 +47,7 @@ class MainUI(QMainWindow):
 
         ################### Inverse Kinematics ###################
         self.ui.inv_solve_pb.clicked.connect(self.inv_getAnglesNPlot)
-        self.ui.inv_run_pb.clicked.connect(self.run)
+        self.ui.run_pb.clicked.connect(self.run)
         #self.ui.desired_speed_slider.setRange(30, 1000)
         #self.ui.desired_acc_slider.setRange(1, 2000)
         #self.ui.desired_speed_adjust.setRange(30, 1000)
@@ -60,7 +63,11 @@ class MainUI(QMainWindow):
         self.setup_joint_controls()
 
         ################### Manual Control ###################
-        # self.ui.man_j1_plus.pressed.connect(self.handle_manual_tab)
+        # Timer for sending repeated commands during manual control
+        self.manual_timer = QTimer()
+        # self.manual_timer.timeout.connect(self.send_manual_command)
+        self.current_joint = None  # Track which joint to move
+        self.movement_direction = 0  # Track the direction (1 for positive, -1 for negative)
 
     def setup_joint_controls(self):
         dir_ranges = [
@@ -94,6 +101,7 @@ class MainUI(QMainWindow):
             desiredX = float(self.ui.desired_x.text())
             desiredY = float(self.ui.desired_y.text())
             result = inverse_kinematics(desiredX, desiredY, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+            #print(str("result: ")+str(result))
             if result:
                 self.update_theta_ui(result['theta1'], result['theta2'])
                 self.ui.solvability_check.setText('Solvability: OK')
@@ -108,10 +116,12 @@ class MainUI(QMainWindow):
         desiredAngles = [
             radians(self.ui.j1_dir_theta.value()),
             radians(self.ui.j2_dir_theta.value()),
-            radians(self.ui.j3_dir_theta.value()),
-            radians(self.ui.j4_dir_theta.value())
+            # required for J3 and J4, do not remove
+            # radians(self.ui.j3_dir_theta.value()),
+            # radians(self.ui.j4_dir_theta.value())
         ]
-        result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+        result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH) # will have 7 inputs in the
+        # future for J3 and J4
         self.ui.result_x.setText(str(result['tool_x']))
         self.ui.result_y.setText(str(result['tool_y']))
         self.plot_robot(result)
@@ -124,6 +134,7 @@ class MainUI(QMainWindow):
         )
 
     def run(self):
+        # NOTE NOTE　NOTE: Manual Control is not managed by RUN button and function, thus excluded from it
         if not self.comport_open:
             self.show_message_box("USB Port is not OPEN!", "Serial Port Error")
             return
@@ -144,9 +155,8 @@ class MainUI(QMainWindow):
         tab_handlers = {
             0: self.handle_inverse_tab,
             1: self.handle_direct_tab,
-            #2: self.handle_manual_tab,
-            3: self.handle_programmed_tab,
-            4: self.handle_guided_tab
+            # 3: self.handle_programmed_tab,
+            # 4: self.handle_guided_tab
         }
 
         if self.current_tab_mode in tab_handlers:
@@ -174,9 +184,12 @@ class MainUI(QMainWindow):
 
         pass
 
-
     def on_tab_changed(self, new_tab_mode):
         self.current_tab_mode = new_tab_mode
+        if self.current_tab_mode == 2:
+            self.ui.run_pb.setEnabled(False)
+        else:
+            self.ui.run_pb.setEnabled(True)
         print(f"Tab changed to: {self.current_tab_mode}")
 
     def COM_open(self):
