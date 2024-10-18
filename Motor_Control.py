@@ -2,9 +2,10 @@ import math
 import Send_Command
 import time
 
+
 # this program prepares the data to be sent to the edge stm32 controller to control the motor drivers
 
-def motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
+def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     acc_J1 = accelerationControl(acc)
     speed_J1 = speedControl(speed, 64, reduction)
     position_J1 = positionControl_J1(J1)
@@ -16,11 +17,57 @@ def motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     final_Position_J1 = 0
     final_Position_J2 = 0
 
-    Send_Command.UART_sendCommand(1, speed_J1, acc_J1, position_J1)
+    motionType = 1  # This is for semi-auto run, for manual run, use motionType = 2
+
+    Send_Command.UART_sendCommand(1, motionType, speed_J1, acc_J1, position_J1)
     time.sleep(0.1)  # Small delay
-    Send_Command.UART_sendCommand(2, speed_J2, acc_J2, position_J2)
+    Send_Command.UART_sendCommand(2, motionType, speed_J2, acc_J2, position_J2)
 
     return acc_J1, speed_J1, position_J1, acc_J2, speed_J2, position_J2, final_Position_J1, final_Position_J2
+
+
+def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):
+    """
+    Updated function to handle continuous motion in speed control mode.
+    """
+    slaveAddr = 0
+    if selected_joint == 'J1':
+        slaveAddr = 1
+    elif selected_joint == 'J2':
+        slaveAddr = 2
+    elif selected_joint == 'J3':
+        slaveAddr = 3
+    elif selected_joint == 'J4':
+        slaveAddr = 4
+
+    # Calculate the actual acceleration and speed based on the given parameters
+    motor_actual_acc = accelerationControl(acc)
+    motor_actual_speed = speedControl(speed, 64, reduction)
+
+    motionType = 2  # Assuming 2 represents manual motion control mode
+
+    # Determine the direction of the motor (forward or reverse)
+    motor_direction = 1 if direction > 0 else 0
+
+    # Send command for continuous motion
+    Send_Command.UART_sendCommand(slaveAddr, motionType, motor_actual_speed, motor_actual_acc, motor_direction)
+
+
+def fullManual_motionStop(selected_joint):
+    """
+    Function to send a stop command for the motor.
+    """
+    slaveAddr = 0
+    if selected_joint == 'J1':
+        slaveAddr = 1
+    elif selected_joint == 'J2':
+        slaveAddr = 2
+    elif selected_joint == 'J3':
+        slaveAddr = 3
+    elif selected_joint == 'J4':
+        slaveAddr = 4
+    # Stop command might not require speed or acceleration, just the joint
+    Send_Command.UART_sendCommand(slaveAddr, 0, 0, 0, 0)  # Assuming this format stops the motor
 
 
 def accelerationControl(desired_acc_rad):

@@ -17,11 +17,12 @@ if ser.is_open:
 try:
     # Example: Send command with slaveAddr=1, speed=60, acc=30, axis=4000
     slaveAddr = 1
-    speed = 900
-    acc = 225
-    axis =168300
+    motionType = 1
+    speed = 10
+    acc = 10
+    axis = 0
 
-    command = f"{slaveAddr} {speed} {acc} {axis}\n"
+    command = f"{slaveAddr} {motionType} {speed} {acc} {axis}\n"
     ser.write(command.encode())
     print(f"Sent: {command.strip()}")
 

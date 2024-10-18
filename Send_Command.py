@@ -30,7 +30,7 @@ def UART_Init(comport):
         return False
 
 
-def UART_sendCommand(slaveAddr, speed, acc, angle):
+def UART_sendCommand(slaveAddr,motionType, speed, acc, angle):
     global ser  # Use the global ser variable
 
     if ser is None or not ser.is_open:
@@ -39,7 +39,7 @@ def UART_sendCommand(slaveAddr, speed, acc, angle):
 
     try:
         # Construct the command string
-        command = f"{round(slaveAddr)} {round(speed)} {round(acc)} {round(angle)}\n"
+        command = f"{round(slaveAddr)} {motionType} {round(speed)} {round(acc)} {round(angle)}\n"
         ser.write(command.encode())  # Send the command over UART
         print(f"Sent: {command.strip()}")
 
