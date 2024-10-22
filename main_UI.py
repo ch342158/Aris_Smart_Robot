@@ -1,5 +1,6 @@
+from PyQt6.QtCore import Qt
 from PyQt6 import uic
-from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout,QTableWidgetItem
 from math import radians
 
 import Send_Command
@@ -15,6 +16,7 @@ A1_WIDTH = 65
 class MainUI(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.ui = uic.loadUi('ARIS_SMART.ui', self)
 
         ################### For Plotting the Robot ###################
@@ -58,6 +60,9 @@ class MainUI(QMainWindow):
         ################### Direct Kinematics ###################
         self.ui.dir_check_pb.clicked.connect(self.dir_getCoordinateNPlot)
         self.setup_joint_controls()
+
+        # Set up programmed controls
+        self.setup_programmed_controls()
 
 
 
@@ -197,6 +202,102 @@ class MainUI(QMainWindow):
         self.ui.desired_y.setText("390")
         self.inv_getAnglesNPlot()
 
+    def setup_programmed_controls(self):
+        # Connect add, remove, and execute buttons
+        self.ui.add_action_button.clicked.connect(self.add_programmed_action)
+        self.ui.remove_action_button.clicked.connect(self.remove_programmed_action)
+        self.ui.execute_programmed_button.clicked.connect(self.execute_programmed_actions)
+
+    def add_programmed_action(self):
+        # Add a new row to the programmed action table
+        row_position = self.ui.programmed_table.rowCount()
+        self.ui.programmed_table.insertRow(row_position)
+
+        # Initialize each cell in the new row with an empty QTableWidgetItem to allow editing
+        for col in range(self.ui.programmed_table.columnCount()):
+            item = QTableWidgetItem("")  # Create an empty table item
+            # Set flags to make sure the item is editable
+            item.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable)
+            self.ui.programmed_table.setItem(row_position, col, item)
+
+    def remove_programmed_action(self):
+        # Remove the selected row from the table
+        current_row = self.ui.programmed_table.currentRow()
+        if current_row >= 0:
+            self.ui.programmed_table.removeRow(current_row)
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a row to remove.")
+
+    def execute_programmed_actions(self):
+        actions = []
+
+        # Iterate through the table rows to collect the action data
+        for row in range(self.ui.programmed_table.rowCount()):
+            try:
+                # Extract joint angles and coordinates from the table
+                j1_angle = float(self.ui.programmed_table.item(row, 0).text())
+                j2_angle = float(self.ui.programmed_table.item(row, 1).text())
+                j3_angle = float(self.ui.programmed_table.item(row, 2).text())
+                j4_angle = float(self.ui.programmed_table.item(row, 3).text())
+                x_coord = float(self.ui.programmed_table.item(row, 4).text())
+                y_coord = float(self.ui.programmed_table.item(row, 5).text())
+                z_coord = float(self.ui.programmed_table.item(row, 6).text())
+
+                # Store each action as a dictionary
+                actions.append({
+                    "j1_angle": j1_angle,
+                    "j2_angle": j2_angle,
+                    "j3_angle": j3_angle,
+                    "j4_angle": j4_angle,
+                    "x_coord": x_coord,
+                    "y_coord": y_coord,
+                    "z_coord": z_coord
+                })
+            except (ValueError, AttributeError):
+                QMessageBox.warning(self, "Input Error",
+                                    f"Invalid input at row {row + 1}. Please enter numeric values.")
+                return
+
+        # Perform each action sequentially
+        for action in actions:
+            self.perform_action(action)
+
+    def perform_action(self, action):
+        # Extract values from the action
+        j1 = action["j1_angle"]
+        j2 = action["j2_angle"]
+        j3 = action["j3_angle"]
+        j4 = action["j4_angle"]
+
+        # Convert angles to radians if needed
+        j1_rad = radians(j1)
+        j2_rad = radians(j2)
+        j3_rad = radians(j3)
+        j4_rad = radians(j4)
+
+        # Send commands to the robot
+        Motor_Control.motionActuate(
+            speed=500,  # Default speed value, can be customized
+            acc=100,  # Default acceleration value, can be customized
+            micro=64,  # Default microstepping
+            reduction=3,
+            J1=j1,
+            J2=j2,
+            J3=j3,
+            J4=j4
+        )
+
+        # Update the plot with the new robot position (based on the direct kinematics result)
+        result = direct_kinematics(j1_rad, j2_rad, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+        self.plot_robot(result)
+
+    def plot_robot(self, result):
+        # Plot the SCARA robot's new position based on calculated coordinates
+        self.canvas.plot_scara_robot(
+            result['elbow_x'], result['elbow_y'],
+            result['tool_x'], result['tool_y'],
+            *result['border_points']
+        )
 if __name__ == '__main__':
     app = QApplication([])
     ARIS_SMART_UI = MainUI()

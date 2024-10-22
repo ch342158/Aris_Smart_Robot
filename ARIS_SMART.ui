@@ -2680,31 +2680,100 @@ QPushButton:pressed {
          </widget>
         </widget>
         <widget class="QWidget" name="tab_4">
-         <attribute name="title">
-          <string>Programmed</string>
-         </attribute>
-         <widget class="QTextBrowser" name="inv_status_4">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>320</y>
-            <width>529</width>
-            <height>93</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>527</width>
-            <height>93</height>
-           </size>
-          </property>
-         </widget>
+    <attribute name="title">
+        <string>Programmed</string>
+    </attribute>
+    <widget class="QTableWidget" name="programmed_table">
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>529</width>
+                <height>300</height>
+            </rect>
+        </property>
+        <property name="columnCount">
+            <number>7</number>
+        </property>
+        <property name="rowCount">
+            <number>0</number> <!-- Start with zero rows -->
+        </property>
+        <column>
+            <property name="text">
+                <string>J1 Angle</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>J2 Angle</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>J3 Angle</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>J4 Angle</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>X</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Y</string>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Z</string>
+            </property>
+        </column>
+    </widget>
+    <widget class="QPushButton" name="add_action_button">
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>420</y>
+                <width>100</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Add Action</string>
+        </property>
+    </widget>
+    <widget class="QPushButton" name="remove_action_button">
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>420</y>
+                <width>150</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Remove Action</string>
+        </property>
+    </widget>
+    <widget class="QPushButton" name="execute_programmed_button">
+        <property name="geometry">
+            <rect>
+                <x>280</x>
+                <y>420</y>
+                <width>150</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Execute Actions</string>
+        </property>
+    </widget>
+
         </widget>
         <widget class="QWidget" name="tab_5">
          <attribute name="title">
