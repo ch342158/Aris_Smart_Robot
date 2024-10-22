@@ -4,7 +4,7 @@ import random
 
 # Configure the serial port
 ser = serial.Serial(
-    port='COM3',  # Update this to the correct port on your system (e.g., COM3 on Windows)
+    port='COM6',  # Update this to the correct port on your system (e.g., COM3 on Windows)
     baudrate=9600,
     timeout=1  # Timeout in seconds
 )

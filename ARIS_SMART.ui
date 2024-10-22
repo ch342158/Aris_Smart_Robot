@@ -1203,7 +1203,7 @@ QPushButton:pressed {
      </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="inv_run_pb">
+     <widget class="QPushButton" name="run_pb">
       <property name="font">
        <font>
         <family>Consolas</family>
@@ -1256,7 +1256,7 @@ QPushButton:pressed {
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -2250,7 +2250,7 @@ QPushButton:pressed {
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_32">
                  <item>
-                  <widget class="QPushButton" name="pushButton_5">
+                  <widget class="QPushButton" name="man_j1_minus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2278,7 +2278,7 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_6">
+                  <widget class="QPushButton" name="man_j2_minus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2306,7 +2306,7 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_7">
+                  <widget class="QPushButton" name="man_j3_minus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2338,7 +2338,7 @@ QPushButton:pressed {
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_33">
                  <item>
-                  <widget class="QPushButton" name="pushButton_11">
+                  <widget class="QPushButton" name="man_j1_plus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2366,7 +2366,7 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_12">
+                  <widget class="QPushButton" name="man_j2_plus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2394,7 +2394,7 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_13">
+                  <widget class="QPushButton" name="man_j3_plus">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -2426,7 +2426,7 @@ QPushButton:pressed {
               </layout>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_15">
+              <widget class="QPushButton" name="man_j4_minus">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                  <horstretch>0</horstretch>
@@ -2647,7 +2647,7 @@ QPushButton:pressed {
               </layout>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_14">
+              <widget class="QPushButton" name="man_j4_plus">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                  <horstretch>0</horstretch>
