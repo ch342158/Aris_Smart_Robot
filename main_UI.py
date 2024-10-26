@@ -1,3 +1,5 @@
+import time
+
 from PyQt6.QtCore import Qt
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout,QTableWidgetItem
@@ -46,7 +48,7 @@ class MainUI(QMainWindow):
 
         ################### Inverse Kinematics ###################
         self.ui.inv_solve_pb.clicked.connect(self.inv_getAnglesNPlot)
-        self.ui.inv_run_pb.clicked.connect(self.run)
+        self.ui.run_pb.clicked.connect(self.run)
         #self.ui.desired_speed_slider.setRange(30, 1000)
         #self.ui.desired_acc_slider.setRange(1, 2000)
         #self.ui.desired_speed_adjust.setRange(30, 1000)
@@ -239,9 +241,9 @@ class MainUI(QMainWindow):
                 j2_angle = float(self.ui.programmed_table.item(row, 1).text())
                 j3_angle = float(self.ui.programmed_table.item(row, 2).text())
                 j4_angle = float(self.ui.programmed_table.item(row, 3).text())
-                x_coord = float(self.ui.programmed_table.item(row, 4).text())
-                y_coord = float(self.ui.programmed_table.item(row, 5).text())
-                z_coord = float(self.ui.programmed_table.item(row, 6).text())
+                #x_coord = float(self.ui.programmed_table.item(row, 4).text())
+                #y_coord = float(self.ui.programmed_table.item(row, 5).text())
+                #z_coord = float(self.ui.programmed_table.item(row, 6).text())
 
                 # Store each action as a dictionary
                 actions.append({
@@ -249,9 +251,9 @@ class MainUI(QMainWindow):
                     "j2_angle": j2_angle,
                     "j3_angle": j3_angle,
                     "j4_angle": j4_angle,
-                    "x_coord": x_coord,
-                    "y_coord": y_coord,
-                    "z_coord": z_coord
+                    #"x_coord": x_coord,
+                    #"y_coord": y_coord,
+                    #"z_coord": z_coord
                 })
             except (ValueError, AttributeError):
                 QMessageBox.warning(self, "Input Error",
@@ -260,7 +262,10 @@ class MainUI(QMainWindow):
 
         # Perform each action sequentially
         for action in actions:
+            #waiting for optimization, return message.
             self.perform_action(action)
+            time.sleep(10)
+
 
     def perform_action(self, action):
         # Extract values from the action
@@ -276,7 +281,7 @@ class MainUI(QMainWindow):
         j4_rad = radians(j4)
 
         # Send commands to the robot
-        Motor_Control.motionActuate(
+        Motor_Control.semiAuto_motionActuate(
             speed=500,  # Default speed value, can be customized
             acc=100,  # Default acceleration value, can be customized
             micro=64,  # Default microstepping

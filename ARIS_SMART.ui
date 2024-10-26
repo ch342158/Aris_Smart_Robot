@@ -2693,7 +2693,7 @@ QPushButton:pressed {
             </rect>
         </property>
         <property name="columnCount">
-            <number>7</number>
+            <number>4</number>
         </property>
         <property name="rowCount">
             <number>0</number> <!-- Start with zero rows -->
@@ -2718,7 +2718,7 @@ QPushButton:pressed {
                 <string>J4 Angle</string>
             </property>
         </column>
-        <column>
+        <!--><column>
             <property name="text">
                 <string>X</string>
             </property>
@@ -2732,7 +2732,7 @@ QPushButton:pressed {
             <property name="text">
                 <string>Z</string>
             </property>
-        </column>
+        </column><!-->
     </widget>
     <widget class="QPushButton" name="add_action_button">
         <property name="geometry">
