@@ -56,7 +56,7 @@ class MainUI(QMainWindow):
         #self.ui.desired_speed_slider.valueChanged.connect(self.ui.desired_speed_adjust.setValue)
         #self.ui.desired_acc_slider.valueChanged.connect(self.ui.desired_acc_adjust.setValue)
 
-        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 30, 1000, 500)
+        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 10, 1)
         self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 2000, 1000)
 
         ################### Direct Kinematics ###################
@@ -65,7 +65,27 @@ class MainUI(QMainWindow):
 
         # Set up programmed controls
         self.setup_programmed_controls()
+        self.move_increment = 0  # NOTE NOTE NOTE this is only for testing the program, will not use on motor control
 
+        # Connect the buttons to press and release events
+        self.ui.man_j1_minus.pressed.connect(lambda: self.start_manual_move("J1", 0))
+        self.ui.man_j1_plus.pressed.connect(lambda: self.start_manual_move("J1", 1))
+        self.ui.man_j2_minus.pressed.connect(lambda: self.start_manual_move("J2", 0))
+        self.ui.man_j2_plus.pressed.connect(lambda: self.start_manual_move("J2", 1))
+        self.ui.man_j3_minus.pressed.connect(lambda: self.start_manual_move("J3", 0))
+        self.ui.man_j3_plus.pressed.connect(lambda: self.start_manual_move("J3", 1))
+        self.ui.man_j4_minus.pressed.connect(lambda: self.start_manual_move("J4", 0))
+        self.ui.man_j4_plus.pressed.connect(lambda: self.start_manual_move("J4", 1))
+
+        # Button release events to stop movement
+        self.ui.man_j1_minus.released.connect(self.stop_manual_move)
+        self.ui.man_j1_plus.released.connect(self.stop_manual_move)
+        self.ui.man_j2_minus.released.connect(self.stop_manual_move)
+        self.ui.man_j2_plus.released.connect(self.stop_manual_move)
+        self.ui.man_j3_minus.released.connect(self.stop_manual_move)
+        self.ui.man_j3_plus.released.connect(self.stop_manual_move)
+        self.ui.man_j4_minus.released.connect(self.stop_manual_move)
+        self.ui.man_j4_plus.released.connect(self.stop_manual_move)
 
 
     def setup_joint_controls(self):
@@ -117,7 +137,7 @@ class MainUI(QMainWindow):
             radians(self.ui.j3_dir_theta.value()),
             radians(self.ui.j4_dir_theta.value())
         ]
-        result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+        result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH) # will have 7 inputs in the
         self.ui.result_x.setText(str(result['tool_x']))
         self.ui.result_y.setText(str(result['tool_y']))
         self.plot_robot(result)
@@ -167,13 +187,13 @@ class MainUI(QMainWindow):
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J1 and J2')
             return
 
-        Motor_Control.motionActuate(desired_speed, desired_acc, desired_microStep, 3,
-                                    desiredAngle_J1, desiredAngle_J2, 0, 0)
+        Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
+                                             desiredAngle_J1, desiredAngle_J2, 0, 0)
 
     def handle_direct_tab(self, desired_speed, desired_acc, desired_microStep):
         angles = [self.ui.j1_dir_theta.value(), self.ui.j2_dir_theta.value(),
                   self.ui.j3_dir_theta.value(), self.ui.j4_dir_theta.value()]
-        Motor_Control.motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
+        Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
 
     # Define other tab handlers here (manual, programmed, guided)
 
@@ -303,6 +323,36 @@ class MainUI(QMainWindow):
             result['tool_x'], result['tool_y'],
             *result['border_points']
         )
+
+    def start_manual_move(self, joint, direction):
+        """Start continuous motion of the given joint in the specified direction."""
+        self.current_joint = joint
+        self.movement_direction = direction
+        desired_speed = self.ui.desired_speed_adjust.value()
+        desired_acc = self.ui.desired_acc_adjust.value()
+
+        # Send command for continuous motion
+        Motor_Control.fullManual_motionStart(desired_speed, desired_acc, 3, joint, direction)
+
+    def stop_manual_move(self):
+        """Stop continuous motion of the joint."""
+        if self.current_joint:
+            Motor_Control.fullManual_motionStop(self.current_joint)
+
+        # Reset state
+        self.current_joint = None
+        self.movement_direction = 0
+
+    # the following function implement the tick-by-tick control, which may not be the best but i would leave it here
+    # for now i have discovered a better approach for manual control of one motor: the speed control mode,
+    # which a command is sent to the motor to keep it moving, and can be stopped by another command.
+    """def send_manual_command(self):
+        #Send the move command for the relative movement (for now just print).
+        desired_speed = self.ui.desired_speed_adjust.value()
+        desired_acc = self.ui.desired_acc_adjust.value()
+        if self.current_joint and self.movement_direction:  # Increment or decrement J1 position based on the movement direction
+            Motor_Control.fullManual_motionActuate(desired_speed,desired_acc,3,self.current_joint,self.movement_direction*2)
+"""
 if __name__ == '__main__':
     app = QApplication([])
     ARIS_SMART_UI = MainUI()
