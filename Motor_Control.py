@@ -4,7 +4,6 @@ import time
 
 
 # this program prepares the data to be sent to the edge stm32 controller to control the motor drivers
-
 def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     acc_J1 = accelerationControl(acc)
     speed_J1 = speedControl(speed, 64, reduction)
@@ -16,7 +15,6 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
 
     final_Position_J1 = 0
     final_Position_J2 = 0
-
     motionType = 1  # This is for semi-auto run, for manual run, use motionType = 2
 
     Send_Command.UART_sendCommand(1, motionType, speed_J1, acc_J1, position_J1)
@@ -24,7 +22,6 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     Send_Command.UART_sendCommand(2, motionType, speed_J2, acc_J2, position_J2)
 
     return acc_J1, speed_J1, position_J1, acc_J2, speed_J2, position_J2, final_Position_J1, final_Position_J2
-
 
 def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):
     """
@@ -68,7 +65,6 @@ def fullManual_motionStop(selected_joint):
         slaveAddr = 4
     # Stop command might not require speed or acceleration, just the joint
     Send_Command.UART_sendCommand(slaveAddr, 0, 0, 0, 0)  # Assuming this format stops the motor
-
 
 def accelerationControl(desired_acc_rad):
     # using rad/s^2 as the unit of angular acceleration
