@@ -134,8 +134,8 @@ class MainUI(QMainWindow):
         desiredAngles = [
             radians(self.ui.j1_dir_theta.value()),
             radians(self.ui.j2_dir_theta.value()),
-            radians(self.ui.j3_dir_theta.value()),
-            radians(self.ui.j4_dir_theta.value())
+            # radians(self.ui.j3_dir_theta.value()),
+            # radians(self.ui.j4_dir_theta.value())
         ]
         result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH) # will have 7 inputs in the
         self.ui.result_x.setText(str(result['tool_x']))
