@@ -32,7 +32,7 @@ class MainUI(QMainWindow):
 
         ################### Initialize UART ###################
         self.comport_open = False
-        self.comport = 3
+        self.comport = 6
         self.comport_open = Send_Command.UART_Init(self.comport)
         self.ui.manual_COM_open.clicked.connect(self.COM_open)
 
@@ -56,7 +56,7 @@ class MainUI(QMainWindow):
         #self.ui.desired_speed_slider.valueChanged.connect(self.ui.desired_speed_adjust.setValue)
         #self.ui.desired_acc_slider.valueChanged.connect(self.ui.desired_acc_adjust.setValue)
 
-        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 10, 1)
+        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 1)
         self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 2000, 1000)
 
         ################### Direct Kinematics ###################
@@ -90,7 +90,7 @@ class MainUI(QMainWindow):
 
     def setup_joint_controls(self):
         dir_ranges = [
-            [-60, 240], [-120, 120], [-180, 180], [-180, 180]
+            [-100, 100], [-100, 100], [-180, 180], [-180, 180]
         ]
 
         theta_sliders = [
@@ -132,8 +132,8 @@ class MainUI(QMainWindow):
 
     def dir_getCoordinateNPlot(self):
         desiredAngles = [
-            radians(self.ui.j1_dir_theta.value()),
-            radians(self.ui.j2_dir_theta.value()),
+            -radians(self.ui.j1_dir_theta.value()-90), # offsets to makeup the zero/home position for arm 1
+            -radians(self.ui.j2_dir_theta.value()),
             # radians(self.ui.j3_dir_theta.value()),
             # radians(self.ui.j4_dir_theta.value())
         ]
@@ -171,9 +171,9 @@ class MainUI(QMainWindow):
         tab_handlers = {
             0: self.handle_inverse_tab,
             1: self.handle_direct_tab,
-            2: self.handle_manual_tab,
-            3: self.handle_programmed_tab,
-            4: self.handle_guided_tab
+            # 2: self.handle_manual_tab,
+            # 3: self.handle_programmed_tab,
+            # 4: self.handle_guided_tab
         }
 
         if self.current_tab_mode in tab_handlers:

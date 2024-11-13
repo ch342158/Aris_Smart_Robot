@@ -4,7 +4,7 @@ import random
 
 # Configure the serial port
 ser = serial.Serial(
-    port='COM3',  # Update this to the correct port on your system (e.g., COM3 on Windows)
+    port='COM6',  # Update this to the correct port on your system (e.g., COM3 on Windows)
     baudrate=9600,
     timeout=1  # Timeout in seconds
 )
@@ -16,10 +16,10 @@ if ser.is_open:
 
 try:
     # Example: Send command with slaveAddr=1, speed=60, acc=30, axis=4000
-    slaveAddr = 1
+    slaveAddr = 2
     motionType = 1
-    speed = 10
-    acc = 10
+    speed = 15
+    acc = 100
     axis = 0
 
     command = f"{slaveAddr} {motionType} {speed} {acc} {axis}\n"

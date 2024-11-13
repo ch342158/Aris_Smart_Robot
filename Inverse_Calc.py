@@ -44,7 +44,7 @@ def inverse_kinematics(x, y, arm1_length, arm2_length, a1_width):
     RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y = calculate_arm1_top_boarder(theta1, arm1_length, a1_width)
 
     return {
-        'theta1': degrees(theta1),
+        'theta1': degrees(theta1)-90, # offset for scara
         'theta2': degrees(theta2),
         'elbow_x': elbow_x,
         'elbow_y': elbow_y,
