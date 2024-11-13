@@ -27,7 +27,6 @@ def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):
     """
     Updated function to handle continuous motion in speed control mode.
     """
-    slaveAddr = 0
     if selected_joint == 'J1':
         slaveAddr = 1
     elif selected_joint == 'J2':

@@ -68,14 +68,14 @@ class MainUI(QMainWindow):
         self.move_increment = 0  # NOTE NOTE NOTE this is only for testing the program, will not use on motor control
 
         # Connect the buttons to press and release events
-        self.ui.man_j1_minus.pressed.connect(lambda: self.start_manual_move("J1", 0))
-        self.ui.man_j1_plus.pressed.connect(lambda: self.start_manual_move("J1", 1))
-        self.ui.man_j2_minus.pressed.connect(lambda: self.start_manual_move("J2", 0))
-        self.ui.man_j2_plus.pressed.connect(lambda: self.start_manual_move("J2", 1))
-        self.ui.man_j3_minus.pressed.connect(lambda: self.start_manual_move("J3", 0))
-        self.ui.man_j3_plus.pressed.connect(lambda: self.start_manual_move("J3", 1))
-        self.ui.man_j4_minus.pressed.connect(lambda: self.start_manual_move("J4", 0))
-        self.ui.man_j4_plus.pressed.connect(lambda: self.start_manual_move("J4", 1))
+        self.ui.man_j1_minus.pressed.connect(lambda: self.start_manual_move("J1", 1))
+        self.ui.man_j1_plus.pressed.connect(lambda: self.start_manual_move("J1", 0))
+        self.ui.man_j2_minus.pressed.connect(lambda: self.start_manual_move("J2", 1)) # direction for J2 is reversed due to the mechanical design, the motion of the motor is reversed by the belt gear
+        self.ui.man_j2_plus.pressed.connect(lambda: self.start_manual_move("J2", 0))
+        self.ui.man_j3_minus.pressed.connect(lambda: self.start_manual_move("J3", 1))
+        self.ui.man_j3_plus.pressed.connect(lambda: self.start_manual_move("J3", 0))
+        self.ui.man_j4_minus.pressed.connect(lambda: self.start_manual_move("J4", 1))
+        self.ui.man_j4_plus.pressed.connect(lambda: self.start_manual_move("J4", 0))
 
         # Button release events to stop movement
         self.ui.man_j1_minus.released.connect(self.stop_manual_move)
@@ -132,8 +132,8 @@ class MainUI(QMainWindow):
 
     def dir_getCoordinateNPlot(self):
         desiredAngles = [
-            -radians(self.ui.j1_dir_theta.value()-90), # offsets to makeup the zero/home position for arm 1
-            -radians(self.ui.j2_dir_theta.value()),
+             radians(self.ui.j1_dir_theta.value()), # offsets to makeup the zero/home position for arm 1
+            radians(self.ui.j2_dir_theta.value()),
             # radians(self.ui.j3_dir_theta.value()),
             # radians(self.ui.j4_dir_theta.value())
         ]
@@ -191,7 +191,7 @@ class MainUI(QMainWindow):
                                              desiredAngle_J1, desiredAngle_J2, 0, 0)
 
     def handle_direct_tab(self, desired_speed, desired_acc, desired_microStep):
-        angles = [self.ui.j1_dir_theta.value(), self.ui.j2_dir_theta.value(),
+        angles = [-self.ui.j1_dir_theta.value(), -self.ui.j2_dir_theta.value(),
                   self.ui.j3_dir_theta.value(), self.ui.j4_dir_theta.value()]
         Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
 
