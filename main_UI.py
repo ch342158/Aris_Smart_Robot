@@ -30,6 +30,10 @@ class MainUI(QMainWindow):
         self.ui.plot_widget.setLayout(layout)
         layout.addWidget(self.canvas)
 
+        ################### Set Plot to Robot Home Position ###################
+        self.inverseControl_goHome()
+        self.directControl_goHome()
+
         ################### Initialize UART ###################
         self.comport_open = False
         self.comport = 6
@@ -44,23 +48,25 @@ class MainUI(QMainWindow):
         self.ui.tabWidget.currentChanged.connect(self.on_tab_changed)
 
         ################### Go Home Button ###################
-        self.ui.inv_gohome.clicked.connect(self.go_home_inverse)
+        self.ui.inv_gohome.clicked.connect(self.inverseControl_goHome)
+        self.ui.dir_gohome.clicked.connect(self.directControl_goHome)
 
         ################### Inverse Kinematics ###################
-        self.ui.inv_solve_pb.clicked.connect(self.inv_getAnglesNPlot)
+        # self.ui.inv_solve_pb.clicked.connect(self.inv_findAnglesNPlot)
         self.ui.run_pb.clicked.connect(self.run)
-        #self.ui.desired_speed_slider.setRange(30, 1000)
-        #self.ui.desired_acc_slider.setRange(1, 2000)
-        #self.ui.desired_speed_adjust.setRange(30, 1000)
-        #self.ui.desired_acc_adjust.setRange(10, 2000)
-        #self.ui.desired_speed_slider.valueChanged.connect(self.ui.desired_speed_adjust.setValue)
-        #self.ui.desired_acc_slider.valueChanged.connect(self.ui.desired_acc_adjust.setValue)
+
+        # Connect X and Y fields to the inverse kinematics function
+        self.ui.desired_x.textChanged.connect(self.inv_findAnglesNPlot)
+        self.ui.desired_y.textChanged.connect(self.inv_findAnglesNPlot)
+
 
         self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 1)
         self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 2000, 1000)
 
         ################### Direct Kinematics ###################
-        self.ui.dir_check_pb.clicked.connect(self.dir_getCoordinateNPlot)
+        # self.ui.dir_check_pb.clicked.connect(self.dir_findCoordinateNPlot)
+        self.ui.j1_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
+        self.ui.j2_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
         self.setup_joint_controls()
 
         # Set up programmed controls
@@ -115,32 +121,88 @@ class MainUI(QMainWindow):
         slider.valueChanged.connect(spinbox.setValue)
         spinbox.valueChanged.connect(lambda value: slider.setValue(int(value)))
 
-    def inv_getAnglesNPlot(self):
+    # Legacy Version of this function
+    # def inv_findAnglesNPlot(self):
+    #     try:
+    #         desiredX = float(self.ui.desired_x.text())
+    #         desiredY = float(self.ui.desired_y.text())
+    #         result = inverse_kinematics(desiredX, desiredY, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+    #         if result:
+    #             self.update_theta_ui(result['theta1'], result['theta2'])
+    #             self.ui.solvability_check.setText('Solvability: OK')
+    #             self.plot_robot(result)
+    #         else:
+    #             self.ui.solvability_check.setText('Solvability: Unsolvable')
+    #             QMessageBox.warning(self, "Warning", "The point is outside the reach of the robot.")
+    #     except ValueError:
+    #         QMessageBox.warning(self, "Input Error", "Invalid input. Please enter numeric values for coordinates.")
+
+    def inv_findAnglesNPlot(self):
         try:
+            # Get values from the input fields
             desiredX = float(self.ui.desired_x.text())
             desiredY = float(self.ui.desired_y.text())
+
+            # Perform inverse kinematics calculation
             result = inverse_kinematics(desiredX, desiredY, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+
             if result:
+                # Update UI with calculated angles
                 self.update_theta_ui(result['theta1'], result['theta2'])
-                self.ui.solvability_check.setText('Solvability: OK')
+                self.ui.solvability_check.setText('Reachability: Within Range')
+
+                # Clear any previous warnings in input fields
+                self.ui.desired_x.setStyleSheet("")
+                self.ui.desired_y.setStyleSheet("")
+
+                # Plot the robot
                 self.plot_robot(result)
             else:
-                self.ui.solvability_check.setText('Solvability: Unsolvable')
-                QMessageBox.warning(self, "Warning", "The point is outside the reach of the robot.")
-        except ValueError:
-            QMessageBox.warning(self, "Input Error", "Invalid input. Please enter numeric values for coordinates.")
+                # Display warning in the solvability line edit
+                self.ui.solvability_check.setText('Reachability: Out of Range')
 
-    def dir_getCoordinateNPlot(self):
-        desiredAngles = [
-             radians(self.ui.j1_dir_theta.value()), # offsets to makeup the zero/home position for arm 1
-            radians(self.ui.j2_dir_theta.value()),
-            # radians(self.ui.j3_dir_theta.value()),
-            # radians(self.ui.j4_dir_theta.value())
-        ]
-        result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH) # will have 7 inputs in the
-        self.ui.result_x.setText(str(result['tool_x']))
-        self.ui.result_y.setText(str(result['tool_y']))
-        self.plot_robot(result)
+                # Highlight the fields with invalid values
+                self.ui.desired_x.setStyleSheet("background-color: yellow;")
+                self.ui.desired_y.setStyleSheet("background-color: yellow;")
+        except ValueError:
+            # Handle non-numeric input with a warning
+            self.ui.solvability_check.setText('Invalid Input')
+            self.ui.desired_x.setStyleSheet("background-color: red;")
+            self.ui.desired_y.setStyleSheet("background-color: red;")
+
+    # Legacy Version of this function
+    # def dir_findCoordinateNPlot(self):
+    #     desiredAngles = [
+    #          radians(self.ui.j1_dir_theta.value()), # offsets to makeup the zero/home position for arm 1
+    #         radians(self.ui.j2_dir_theta.value()),
+    #         # radians(self.ui.j3_dir_theta.value()),
+    #         # radians(self.ui.j4_dir_theta.value())
+    #     ]
+    #     result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH) # will have 7 inputs in the
+    #     self.ui.result_x.setText(str(result['tool_x']))
+    #     self.ui.result_y.setText(str(result['tool_y']))
+    #     self.plot_robot(result)
+
+    def dir_findCoordinateNPlot(self):
+        try:
+            # Get values from the sliders/spin boxes
+            j1_angle = radians(self.ui.j1_dir_theta.value())  # Convert degrees to radians
+            j2_angle = radians(self.ui.j2_dir_theta.value())
+
+            # Add other joints if needed, e.g., J3 and J4
+            desiredAngles = [j1_angle, j2_angle]
+
+            # Perform direct kinematics calculation
+            result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+
+            # Update result fields
+            self.ui.result_x.setText(f"{result['tool_x']:.2f}")
+            self.ui.result_y.setText(f"{result['tool_y']:.2f}")
+
+            # Plot the robot
+            self.plot_robot(result)
+        except Exception as e:
+            QMessageBox.warning(self, "Calculation Error", f"An error occurred: {e}")
 
     def plot_robot(self, result):
         self.canvas.plot_scara_robot(
@@ -219,10 +281,17 @@ class MainUI(QMainWindow):
         self.ui.j1_inv_theta.setText(str(theta1))
         self.ui.j2_inv_theta.setText(str(theta2))
 
-    def go_home_inverse(self):
+    def inverseControl_goHome(self):
         self.ui.desired_x.setText("0")
         self.ui.desired_y.setText("390")
-        self.inv_getAnglesNPlot()
+        self.inv_findAnglesNPlot()
+
+    def directControl_goHome(self):
+        self.ui.j1_theta_slider.setValue(0)
+        self.ui.j2_theta_slider.setValue(0)
+        self.ui.j3_theta_slider.setValue(0)
+        self.ui.j4_theta_slider.setValue(0)
+        self.dir_findCoordinateNPlot()
 
     def setup_programmed_controls(self):
         # Connect add, remove, and execute buttons
