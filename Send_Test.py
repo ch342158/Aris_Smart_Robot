@@ -1,6 +1,6 @@
 import serial
 import time
-import random
+import keyboard  # Use the keyboard module for detecting key presses
 
 # Configure the serial port
 ser = serial.Serial(
@@ -9,16 +9,15 @@ ser = serial.Serial(
     timeout=1  # Timeout in seconds
 )
 
-
 # Ensure the serial port is open
 if ser.is_open:
     print("Serial port opened successfully")
 
 try:
     # Example: Send command with slaveAddr=1, speed=60, acc=30, axis=4000
-    slaveAddr = 2
+    slaveAddr = 4
     motionType = 1
-    speed = 15
+    speed = 200
     acc = 100
     axis = 0
 
@@ -27,6 +26,11 @@ try:
     print(f"Sent: {command.strip()}")
 
     while True:
+        # Check if 'q' is pressed
+        if keyboard.is_pressed('q'):
+            print("Exiting program...")
+            break
+
         # Wait for a response (optional)
         response = ser.readline().decode().strip()
         if response:
@@ -34,11 +38,10 @@ try:
 
         time.sleep(1)
 
-except KeyboardInterrupt:
-    print("Program interrupted by the user")
+except Exception as e:
+    print(f"Error: {e}")
 
 finally:
     # Close the serial port
     ser.close()
     print("Serial port closed")
-

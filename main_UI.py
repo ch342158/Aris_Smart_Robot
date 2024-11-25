@@ -58,15 +58,21 @@ class MainUI(QMainWindow):
         # Connect X and Y fields to the inverse kinematics function
         self.ui.desired_x.textChanged.connect(self.inv_findAnglesNPlot)
         self.ui.desired_y.textChanged.connect(self.inv_findAnglesNPlot)
+        self.ui.desired_z.textChanged.connect(self.inv_findAnglesNPlot)
+        self.ui.desired_rotation.textChanged.connect(self.inv_findAnglesNPlot)
 
 
-        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 1)
-        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 2000, 1000)
+        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 25)
+        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 100, 25)
 
         ################### Direct Kinematics ###################
         # self.ui.dir_check_pb.clicked.connect(self.dir_findCoordinateNPlot)
         self.ui.j1_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
         self.ui.j2_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
+        self.ui.j3_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
+        self.ui.j4_dir_theta.valueChanged.connect(self.dir_findCoordinateNPlot)
+
+
         self.setup_joint_controls()
 
         # Set up programmed controls
@@ -96,7 +102,7 @@ class MainUI(QMainWindow):
 
     def setup_joint_controls(self):
         dir_ranges = [
-            [-100, 100], [-100, 100], [-180, 180], [-180, 180]
+            [-100, 100], [-90, 90], [-180, 180], [-180, 180]
         ]
 
         theta_sliders = [
@@ -142,13 +148,15 @@ class MainUI(QMainWindow):
             # Get values from the input fields
             desiredX = float(self.ui.desired_x.text())
             desiredY = float(self.ui.desired_y.text())
+            desiredZ = float(self.ui.desired_z.text())
+            desiredR = float(self.ui.desired_rotation.text())
 
             # Perform inverse kinematics calculation
-            result = inverse_kinematics(desiredX, desiredY, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+            result = inverse_kinematics(desiredX, desiredY,desiredZ,desiredR, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
 
             if result:
                 # Update UI with calculated angles
-                self.update_theta_ui(result['theta1'], result['theta2'])
+                self.update_theta_ui(result['theta1'], result['theta2'], result['theta3'], result['theta4'])
                 self.ui.solvability_check.setText('Reachability: Within Range')
 
                 # Clear any previous warnings in input fields
@@ -188,16 +196,20 @@ class MainUI(QMainWindow):
             # Get values from the sliders/spin boxes
             j1_angle = radians(self.ui.j1_dir_theta.value())  # Convert degrees to radians
             j2_angle = radians(self.ui.j2_dir_theta.value())
+            j3_angle = radians(self.ui.j3_dir_theta.value())
+            j4_angle = radians(self.ui.j4_dir_theta.value())
 
             # Add other joints if needed, e.g., J3 and J4
-            desiredAngles = [j1_angle, j2_angle]
+            desiredAngles = [j1_angle, j2_angle, j3_angle, j4_angle]
 
             # Perform direct kinematics calculation
             result = direct_kinematics(*desiredAngles, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
 
-            # Update result fields
+            # Update result field
             self.ui.result_x.setText(f"{result['tool_x']:.2f}")
             self.ui.result_y.setText(f"{result['tool_y']:.2f}")
+            self.ui.result_z.setText(f"{result['tool_z']:.2f}")
+            self.ui.result_rotation.setText(f"{result['tool_r']:.2f}")
 
             # Plot the robot
             self.plot_robot(result)
@@ -245,12 +257,14 @@ class MainUI(QMainWindow):
         try:
             desiredAngle_J1 = float(self.ui.j1_inv_theta.text())
             desiredAngle_J2 = float(self.ui.j2_inv_theta.text())
+            desiredAngle_J3 = float(self.ui.j3_inv_theta.text())
+            desiredAngle_J4 = float(self.ui.j4_inv_theta.text())
         except ValueError:
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J1 and J2')
             return
 
         Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
-                                             desiredAngle_J1, desiredAngle_J2, 0, 0)
+                                             desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4)
 
     def handle_direct_tab(self, desired_speed, desired_acc, desired_microStep):
         angles = [-self.ui.j1_dir_theta.value(), -self.ui.j2_dir_theta.value(),
@@ -277,13 +291,17 @@ class MainUI(QMainWindow):
     def show_message_box(self, text, title):
         QMessageBox.warning(self, title, text)
 
-    def update_theta_ui(self, theta1, theta2):
+    def update_theta_ui(self, theta1, theta2, theta3, theta4):
         self.ui.j1_inv_theta.setText(str(theta1))
         self.ui.j2_inv_theta.setText(str(theta2))
+        self.ui.j3_inv_theta.setText(str(theta3))
+        self.ui.j4_inv_theta.setText(str(theta4))
 
     def inverseControl_goHome(self):
         self.ui.desired_x.setText("0")
         self.ui.desired_y.setText("390")
+        self.ui.desired_z.setText("0")
+        self.ui.desired_rotation.setText("0")
         self.inv_findAnglesNPlot()
 
     def directControl_goHome(self):

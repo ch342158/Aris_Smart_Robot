@@ -27,7 +27,7 @@ def calculate_arm1_top_boarder(theta, arm_length, arm_width):
     return RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y
 
 
-def direct_kinematics(theta1, theta2, arm1_length, arm2_length, a1_width):
+def direct_kinematics(theta1, theta2, theta3, theta4, arm1_length, arm2_length, a1_width):
     # Adjust theta1 for SCARA's Y-axis home position, and invert for plotting consistency
     adjusted_theta1 = -(theta1 - radians(90))
     adjusted_theta2 = -theta2  # Invert theta2 for consistent direction
@@ -38,6 +38,9 @@ def direct_kinematics(theta1, theta2, arm1_length, arm2_length, a1_width):
     tool_x = elbow_x + arm2_length * cos(adjusted_theta1 + adjusted_theta2)
     tool_y = elbow_y + arm2_length * sin(adjusted_theta1 + adjusted_theta2)
 
+    tool_z = theta3  # mapping theta3 to actual tool height
+    tool_r = theta4  # tool rotation
+
     # Calculate the arm border points using the adjusted theta1
     RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y = calculate_arm1_top_boarder(adjusted_theta1, arm1_length, a1_width)
 
@@ -46,6 +49,8 @@ def direct_kinematics(theta1, theta2, arm1_length, arm2_length, a1_width):
         'elbow_y': elbow_y,
         'tool_x': tool_x,
         'tool_y': tool_y,
+        'tool_z': tool_z,
+        'tool_r': tool_r,
         'border_points': (RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y)
     }
 

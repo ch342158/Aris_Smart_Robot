@@ -14,12 +14,12 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     position_J2 = positionControl_J2(J2)
 
     acc_J3 = accelerationControl(acc)
-    speed_J3 = speedControl(speed, 64, reduction)
-    position_J3 = positionControl_J2(J3)
+    speed_J3 = speedControl(speed, 64, reduction)/3
+    position_J3 = positionControl_J3(J3)
 
     acc_J4 = accelerationControl(acc)
-    speed_J4 = speedControl(speed, 64, reduction)
-    position_J4 = positionControl_J2(J4)
+    speed_J4 = speedControl(speed, 64, reduction)/3
+    position_J4 = positionControl_J4(J4)
 
     final_Position_J1 = 0
     final_Position_J2 = 0
@@ -29,12 +29,13 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     motionType = 1  # This is for semi-auto run, for manual run, use motionType = 2
 
     Send_Command.UART_sendCommand(1, motionType, speed_J1, acc_J1, position_J1)
-    time.sleep(0.05)  # Small delay
+    time.sleep(0.1)  # Small delay
     Send_Command.UART_sendCommand(2, motionType, speed_J2, acc_J2, position_J2)
-    time.sleep(0.05)  # Small delay
-    Send_Command.UART_sendCommand(3, motionType, speed_J3, acc_J3, position_J3)
-    time.sleep(0.05)  # Small delay
-    Send_Command.UART_sendCommand(4, motionType, speed_J4, acc_J4, position_J4)
+    time.sleep(0.1)  # Small delay
+    Send_Command.UART_sendCommand(3, motionType, speed_J3*3, acc_J3, position_J3)
+    time.sleep(0.1)  # Small delay
+    Send_Command.UART_sendCommand(4, motionType, speed_J4*3, acc_J4, position_J4)
+
 
     return (
         acc_J1, speed_J1, position_J1, final_Position_J1,

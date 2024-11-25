@@ -1,6 +1,4 @@
-# inverse_kinematics
-
-from math import acos, cos, sin, atan2, atan, degrees, radians, hypot
+from math import acos, cos, sin, atan, atan2, degrees, radians, hypot
 
 def calculate_arm1_top_boarder(theta, arm_length, arm_width):
     RT_phi = atan(arm_width / 2 / arm_length)
@@ -25,13 +23,24 @@ def calculate_arm1_top_boarder(theta, arm_length, arm_width):
 
     return RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y
 
-def inverse_kinematics(x, y, arm1_length, arm2_length, a1_width):
+from math import acos, cos, sin, atan2, degrees, radians, hypot
+
+def inverse_kinematics(x, y, z, r, arm1_length, arm2_length, a1_width):
     try:
         if x >= 0:
             theta2 = -acos((x ** 2 + y ** 2 - arm1_length ** 2 - arm2_length ** 2) / (2 * arm1_length * arm2_length))
+            theta1 = atan2(y, x) - atan2(arm2_length * sin(theta2), arm1_length + arm2_length * cos(theta2))
+
         else:
             theta2 = acos((x ** 2 + y ** 2 - arm1_length ** 2 - arm2_length ** 2) / (2 * arm1_length * arm2_length))
-        theta1 = atan2(y, x) - atan2(arm2_length * sin(theta2), arm1_length + arm2_length * cos(theta2))
+
+            if y < 0:
+                theta1 = atan2(y, x) - atan2(arm2_length * sin(theta2), arm1_length + arm2_length * cos(theta2)) + radians(360)
+            else:
+                theta1 = atan2(y, x) - atan2(arm2_length * sin(theta2), arm1_length + arm2_length * cos(theta2))
+
+
+
     except ValueError:
         return None
 
@@ -39,6 +48,9 @@ def inverse_kinematics(x, y, arm1_length, arm2_length, a1_width):
     elbow_y = arm1_length * sin(theta1)  # arm1 end point y
     tool_x = elbow_x + arm2_length * cos(theta1 + theta2)  # tool end x
     tool_y = elbow_y + arm2_length * sin(theta1 + theta2)  # tool end y
+
+    theta3 = z  # mapping, requires validation
+    theta4 = r
 
     # Calculate the arm boarder points
     RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y = calculate_arm1_top_boarder(theta1, arm1_length, a1_width)
@@ -50,5 +62,7 @@ def inverse_kinematics(x, y, arm1_length, arm2_length, a1_width):
         'elbow_y': elbow_y,
         'tool_x': tool_x,
         'tool_y': tool_y,
+        'theta3': z,
+        'theta4': r,
         'border_points': (RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y)
     }
