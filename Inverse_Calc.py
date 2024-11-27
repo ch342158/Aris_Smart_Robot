@@ -49,7 +49,7 @@ def inverse_kinematics(x, y, z, r, arm1_length, arm2_length, a1_width):
     tool_x = elbow_x + arm2_length * cos(theta1 + theta2)  # tool end x
     tool_y = elbow_y + arm2_length * sin(theta1 + theta2)  # tool end y
 
-    theta3 = z  # mapping, requires validation
+    theta3 = z * -360  # mapping, requires validation
     theta4 = r
 
     # Calculate the arm boarder points
@@ -62,7 +62,7 @@ def inverse_kinematics(x, y, z, r, arm1_length, arm2_length, a1_width):
         'elbow_y': elbow_y,
         'tool_x': tool_x,
         'tool_y': tool_y,
-        'theta3': z,
-        'theta4': r,
+        'theta3': theta3,
+        'theta4': theta4,
         'border_points': (RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y)
     }

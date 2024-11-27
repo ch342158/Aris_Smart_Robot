@@ -30,6 +30,8 @@ class MainUI(QMainWindow):
         self.ui.plot_widget.setLayout(layout)
         layout.addWidget(self.canvas)
 
+        self.check_tab_mode_at_start()
+
         ################### Set Plot to Robot Home Position ###################
         self.inverseControl_goHome()
         self.directControl_goHome()
@@ -55,15 +57,19 @@ class MainUI(QMainWindow):
         # self.ui.inv_solve_pb.clicked.connect(self.inv_findAnglesNPlot)
         self.ui.run_pb.clicked.connect(self.run)
 
+
+        self.setup_slider_spinbox(self.ui.desired_z_slider, self.ui.desired_z_adjust, -20, 0, 0,1,0.1)
+
         # Connect X and Y fields to the inverse kinematics function
         self.ui.desired_x.textChanged.connect(self.inv_findAnglesNPlot)
         self.ui.desired_y.textChanged.connect(self.inv_findAnglesNPlot)
-        self.ui.desired_z.textChanged.connect(self.inv_findAnglesNPlot)
+        # self.ui.desired_z.textChanged.connect(self.inv_findAnglesNPlot)
+        self.ui.desired_z_adjust.valueChanged.connect(self.inv_findAnglesNPlot)
         self.ui.desired_rotation.textChanged.connect(self.inv_findAnglesNPlot)
 
 
-        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 25)
-        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 100, 25)
+        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 25,1,0.1)
+        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 100, 25,1,0.1)
 
         ################### Direct Kinematics ###################
         # self.ui.dir_check_pb.clicked.connect(self.dir_findCoordinateNPlot)
@@ -117,9 +123,12 @@ class MainUI(QMainWindow):
 
         for i, (slider, spinbox) in enumerate(zip(theta_sliders, dir_theta_spinboxes)):
             midpoint = (dir_ranges[i][0] + dir_ranges[i][1]) // 2
-            self.setup_slider_spinbox(slider, spinbox, *dir_ranges[i], midpoint)
+            self.setup_slider_spinbox(slider, spinbox, *dir_ranges[i], midpoint, 1,0.1)
 
-    def setup_slider_spinbox(self, slider, spinbox, min_val, max_val, initial_val):
+    def setup_slider_spinbox(self, slider, spinbox, min_val, max_val, initial_val, decimals, step):
+
+        spinbox.setDecimals(decimals)  # Optional: Set the number of decimals
+        spinbox.setSingleStep(step)  # Set step size to 0.1
         slider.setRange(min_val, max_val)
         spinbox.setRange(min_val, max_val)
         slider.setValue(initial_val)
@@ -148,7 +157,7 @@ class MainUI(QMainWindow):
             # Get values from the input fields
             desiredX = float(self.ui.desired_x.text())
             desiredY = float(self.ui.desired_y.text())
-            desiredZ = float(self.ui.desired_z.text())
+            desiredZ = float(self.ui.desired_z_adjust.text()) # use the value of the spinbox
             desiredR = float(self.ui.desired_rotation.text())
 
             # Perform inverse kinematics calculation
@@ -217,12 +226,13 @@ class MainUI(QMainWindow):
             QMessageBox.warning(self, "Calculation Error", f"An error occurred: {e}")
 
     def plot_robot(self, result):
+        self.canvas.reset_limits()
         self.canvas.plot_scara_robot(
             result['elbow_x'], result['elbow_y'],
             result['tool_x'], result['tool_y'],
             *result['border_points']
         )
-
+        self.canvas.reset_limits()
 
     def run(self):
         if not self.comport_open:
@@ -263,24 +273,34 @@ class MainUI(QMainWindow):
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J1 and J2')
             return
 
-        Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
-                                             desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4)
+        print(Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
+                                             desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4))
 
     def handle_direct_tab(self, desired_speed, desired_acc, desired_microStep):
         angles = [-self.ui.j1_dir_theta.value(), -self.ui.j2_dir_theta.value(),
                   self.ui.j3_dir_theta.value(), self.ui.j4_dir_theta.value()]
-        Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
+        print(Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles))
 
     # Define other tab handlers here (manual, programmed, guided)
 
     def on_tab_changed(self, new_tab_mode):
         self.current_tab_mode = new_tab_mode
         print(f"Tab changed to: {self.current_tab_mode}")
-
+        if self.current_tab_mode == 2 or self.current_tab_mode ==3:
+            self.ui.run_pb.setDisabled(True)
+        else:
+            self.ui.run_pb.setDisabled(False)
+    def check_tab_mode_at_start(self):
+        self.tab_mode_at_the_start = self.ui.tabWidget.currentIndex()
+        if self.tab_mode_at_the_start == 2 or self.tab_mode_at_the_start ==3:
+            self.ui.run_pb.setDisabled(True)
+        else:
+            self.ui.run_pb.setDisabled(False)
     def COM_open(self):
         try:
             comport = int(self.ui.comport_enter.text())
             self.comport_open = Send_Command.UART_Init(comport)
+            self.show_message_box("COM Port Successfully Opened", "COM Port Message")
             if not self.comport_open:
                 raise IOError("Failed to open COM port.")
         except ValueError:
@@ -300,7 +320,7 @@ class MainUI(QMainWindow):
     def inverseControl_goHome(self):
         self.ui.desired_x.setText("0")
         self.ui.desired_y.setText("390")
-        self.ui.desired_z.setText("0")
+        self.ui.desired_z_adjust.setValue(0)
         self.ui.desired_rotation.setText("0")
         self.inv_findAnglesNPlot()
 
@@ -344,10 +364,10 @@ class MainUI(QMainWindow):
         for row in range(self.ui.programmed_table.rowCount()):
             try:
                 # Extract joint angles and coordinates from the table
-                j1_angle = float(self.ui.programmed_table.item(row, 0).text())
-                j2_angle = float(self.ui.programmed_table.item(row, 1).text())
+                j1_angle = -float(self.ui.programmed_table.item(row, 0).text())
+                j2_angle = -float(self.ui.programmed_table.item(row, 1).text())
                 j3_angle = float(self.ui.programmed_table.item(row, 2).text())
-                j4_angle = float(self.ui.programmed_table.item(row, 3).text())
+                j4_angle = -float(self.ui.programmed_table.item(row, 3).text())
                 #x_coord = float(self.ui.programmed_table.item(row, 4).text())
                 #y_coord = float(self.ui.programmed_table.item(row, 5).text())
                 #z_coord = float(self.ui.programmed_table.item(row, 6).text())
@@ -371,7 +391,7 @@ class MainUI(QMainWindow):
         for action in actions:
             #waiting for optimization, return message.
             self.perform_action(action)
-            time.sleep(10)
+            time.sleep(0.1)
 
 
     def perform_action(self, action):
@@ -389,9 +409,9 @@ class MainUI(QMainWindow):
 
         # Send commands to the robot
         Motor_Control.semiAuto_motionActuate(
-            speed=500,  # Default speed value, can be customized
-            acc=100,  # Default acceleration value, can be customized
-            micro=64,  # Default microstepping
+            speed= self.ui.desired_speed_adjust.value(),
+            acc= self.ui.desired_acc_adjust.value(),
+            micro=64,
             reduction=3,
             J1=j1,
             J2=j2,
@@ -400,7 +420,7 @@ class MainUI(QMainWindow):
         )
 
         # Update the plot with the new robot position (based on the direct kinematics result)
-        result = direct_kinematics(j1_rad, j2_rad, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+        result = direct_kinematics(j1_rad, j2_rad,j3_rad,j4_rad, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
         self.plot_robot(result)
 
     def plot_robot(self, result):

@@ -14,17 +14,12 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     position_J2 = positionControl_J2(J2)
 
     acc_J3 = accelerationControl(acc)
-    speed_J3 = speedControl(speed, 64, reduction)/3
+    speed_J3 = speedControl(speed, 64, reduction / 3)
     position_J3 = positionControl_J3(J3)
 
     acc_J4 = accelerationControl(acc)
-    speed_J4 = speedControl(speed, 64, reduction)/3
+    speed_J4 = speedControl(speed, 64, reduction / 3)
     position_J4 = positionControl_J4(J4)
-
-    final_Position_J1 = 0
-    final_Position_J2 = 0
-    final_Position_J3 = 0
-    final_Position_J4 = 0
 
     motionType = 1  # This is for semi-auto run, for manual run, use motionType = 2
 
@@ -32,10 +27,42 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     time.sleep(0.1)  # Small delay
     Send_Command.UART_sendCommand(2, motionType, speed_J2, acc_J2, position_J2)
     time.sleep(0.1)  # Small delay
-    Send_Command.UART_sendCommand(3, motionType, speed_J3*3, acc_J3, position_J3)
+    Send_Command.UART_sendCommand(3, motionType, 2900, 254, position_J3)
     time.sleep(0.1)  # Small delay
-    Send_Command.UART_sendCommand(4, motionType, speed_J4*3, acc_J4, position_J4)
+    Send_Command.UART_sendCommand(4, motionType, 1500, 254, position_J4)
 
+    # Call the new function to receive all positions from the microcontroller
+    positions_response = Send_Command.UART_receiveAllPositions()
+
+    # Parse the received response to extract final positions for each motor
+    final_Position_J1, final_Position_J2, final_Position_J3, final_Position_J4 = None, None, None, None
+    # Example format: 1:163840,2:82567,3:23040,4:4096,groupRunCycleDone
+
+    if positions_response:
+        # Split the response by commas to get each motor's info
+        motor_data_list = positions_response.split(',')
+        for motor_data in motor_data_list:
+            if motor_data.startswith("groupRunCycleDone"):
+                continue  # Skip the conclusion mark
+
+            # Extract motor ID and position
+            try:
+                motor_id, motor_position = motor_data.split(':')
+                motor_id = int(motor_id)
+                motor_position = int(motor_position)
+
+                # Assign the final position to the appropriate joint variable
+                if motor_id == 1:
+                    final_Position_J1 = motor_position
+                elif motor_id == 2:
+                    final_Position_J2 = motor_position
+                elif motor_id == 3:
+                    final_Position_J3 = motor_position
+                elif motor_id == 4:
+                    final_Position_J4 = motor_position
+
+            except ValueError:
+                print(f"Error parsing motor data: {motor_data}")
 
     return (
         acc_J1, speed_J1, position_J1, final_Position_J1,
@@ -43,6 +70,7 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
         acc_J3, speed_J3, position_J3, final_Position_J3,
         acc_J4, speed_J4, position_J4, final_Position_J4,
     )
+
 
 def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):
     """
@@ -60,6 +88,13 @@ def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):
     # Calculate the actual acceleration and speed based on the given parameters
     motor_actual_acc = accelerationControl(acc)
     motor_actual_speed = speedControl(speed, 64, reduction)
+
+    if selected_joint == 'J3':
+        motor_actual_speed = 2900
+        motor_actual_acc = 254
+    elif selected_joint == 'J4':
+        motor_actual_speed = 1500
+        motor_actual_acc = 254
 
     motionType = 2  # Assuming 2 represents manual motion control mode
 
@@ -85,6 +120,7 @@ def fullManual_motionStop(selected_joint):
         slaveAddr = 4
     # Stop command might not require speed or acceleration, just the joint
     Send_Command.UART_sendCommand(slaveAddr, 0, 0, 0, 0)  # Assuming this format stops the motor
+
 
 def accelerationControl(desired_acc_rad):
     # using rad/s^2 as the unit of angular acceleration

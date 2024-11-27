@@ -43,24 +43,6 @@ def UART_sendCommand(slaveAddr,motionType, speed, acc, angle):
         ser.write(command.encode())  # Send the command over UART
         print(f"Sent: {command.strip()}")
 
-        # while True:
-        #     # Wait for a response (optional)
-        #     response = ser.readline().decode().strip()
-        #     if response:
-        #         print(f"ACK: {response}")
-        #         # Check if the response indicates that the motor has finished running
-        #         if "Motor 1 finished running" in response:
-        #             print("Motor has finished running, breaking the loop.")
-        #
-        #             # Extract and convert the position from the response
-        #             position_str = response.split("position = ")[-1]  # Get the part after 'position = '
-        #             try:
-        #                 position = int(position_str)  # Convert to integer
-        #                 return position  # Return the position value
-        #             except ValueError:
-        #                 print("Error: Could not convert the position to an integer.")
-        #                 return None  # Return None if conversion fails
-
     except serial.SerialException as e:
         print(f"Error during communication: {e}")
         return None  # Return None if there is a communication error
@@ -69,6 +51,33 @@ def UART_sendCommand(slaveAddr,motionType, speed, acc, angle):
         return None  # Return None if the program is interrupted by the user
 
 
-def UART_ReceiveMessage():
-    # Implementation goes here
-    pass
+def UART_receiveAllPositions():
+    global ser  # Use the global ser variable
+
+    # if ser is None or not ser.is_open:
+    #     print("Serial port is not open")
+    #     return None  # Return None if the serial port is not open
+
+    try:
+        # Buffer to store the entire response
+        response = ""
+
+        while True:
+            # Read one line at a time from the UART
+            line = ser.readline().decode().strip()
+            if line:
+                response += line + "\n"
+                # Break the loop if the conclusion mark is found
+                if "groupRunCycleDone" in line:
+                    break
+
+        # Print and return the full response
+        print(f"Received: {response.strip()}")
+        return response.strip()
+
+    except serial.SerialException as e:
+        print(f"Error during communication: {e}")
+        return None
+    except KeyboardInterrupt:
+        print("Program interrupted by the user")
+        return None

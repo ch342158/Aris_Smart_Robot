@@ -8,6 +8,16 @@ class PlotCanvas(FigureCanvas):
         super(PlotCanvas, self).__init__(fig)
         self.setParent(parent)
 
+        # Set fixed limits for the plot to keep the origin centered
+        self.fixed_limit = 450  # Set the fixed limit for both x and y
+        self.axes.set_xlim(- self.fixed_limit,  self.fixed_limit)
+        self.axes.set_ylim(- self.fixed_limit,  self.fixed_limit)
+
+    def reset_limits(self):
+        """Ensure the plot always maintains fixed limits."""
+        self.axes.set_xlim(-self.fixed_limit, self.fixed_limit)
+        self.axes.set_ylim(-self.fixed_limit, self.fixed_limit)
+
     def plot_scara_robot(self, elbow_x, elbow_y, tool_x, tool_y, RT_x, RT_y, LT_x, LT_y, RB_x, RB_y, LB_x, LB_y):
         ax = self.axes
         ax.clear()
@@ -57,10 +67,8 @@ class PlotCanvas(FigureCanvas):
         ax.grid(True)
         ax.axis('equal')  # Ensures that distances in X and Y are represented equally
 
-        # Set fixed limits for the plot to keep the origin centered
-        fixed_limit = 450  # Set the fixed limit for both x and y
-        ax.set_xlim(-fixed_limit, fixed_limit)
-        ax.set_ylim(-fixed_limit, fixed_limit)
-
         ax.set_title('SCARA Robot Arm Position with Base and Holding Arm')
+
+        self.reset_limits()
+
         self.draw()
