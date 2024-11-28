@@ -108,7 +108,7 @@ class MainUI(QMainWindow):
 
     def setup_joint_controls(self):
         dir_ranges = [
-            [-100, 100], [-90, 90], [-180, 180], [-180, 180]
+            [-100, 100], [-90, 90], [-7200, 7200], [-180, 180]
         ]
 
         theta_sliders = [
