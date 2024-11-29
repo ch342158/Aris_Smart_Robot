@@ -27,7 +27,7 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
     time.sleep(0.1)  # Small delay
     Send_Command.UART_sendCommand(2, motionType, speed_J2, acc_J2, position_J2)
     time.sleep(0.1)  # Small delay
-    Send_Command.UART_sendCommand(3, motionType, 2900, 254, position_J3)
+    Send_Command.UART_sendCommand(3, motionType, 3000, 255, position_J3)
     time.sleep(0.1)  # Small delay
     Send_Command.UART_sendCommand(4, motionType, 1500, 254, position_J4)
 
@@ -64,12 +64,18 @@ def semiAuto_motionActuate(speed, acc, micro, reduction, J1, J2, J3, J4):
             except ValueError:
                 print(f"Error parsing motor data: {motor_data}")
 
-    return (
-        acc_J1, speed_J1, position_J1, final_Position_J1,
-        acc_J2, speed_J2, position_J2, final_Position_J2,
-        acc_J3, speed_J3, position_J3, final_Position_J3,
-        acc_J4, speed_J4, position_J4, final_Position_J4,
-    )
+    result = {
+        "acc_J1": acc_J1, "speed_J1": speed_J1, "target_position_J1": position_J1,
+        "final_position_J1": final_Position_J1,
+        "acc_J2": acc_J2, "speed_J2": speed_J2, "target_position_J2": position_J2,
+        "final_position_J2": final_Position_J2,
+        "acc_J3": acc_J3, "speed_J3": speed_J3, "target_position_J3": position_J3,
+        "final_position_J3": final_Position_J3,
+        "acc_J4": acc_J4, "speed_J4": speed_J4, "target_position_J4": position_J4,
+        "final_position_J4": final_Position_J4,
+    }
+
+    return result
 
 
 def fullManual_motionStart(speed, acc, reduction, selected_joint, direction):

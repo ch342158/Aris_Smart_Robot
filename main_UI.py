@@ -1,9 +1,12 @@
 import time
+import csv
+from math import radians
 
 from PyQt6.QtCore import Qt
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox, QVBoxLayout,QTableWidgetItem
-from math import radians
+from PyQt6.QtWidgets import QFileDialog
+
 
 import Send_Command
 from Inverse_Calc import inverse_kinematics
@@ -68,8 +71,8 @@ class MainUI(QMainWindow):
         self.ui.desired_rotation.textChanged.connect(self.inv_findAnglesNPlot)
 
 
-        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 25,1,0.1)
-        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 100, 25,1,0.1)
+        self.setup_slider_spinbox(self.ui.desired_speed_slider, self.ui.desired_speed_adjust, 1, 50, 20,1,0.1)
+        self.setup_slider_spinbox(self.ui.desired_acc_slider, self.ui.desired_acc_adjust, 10, 100, 20,1,0.1)
 
         ################### Direct Kinematics ###################
         # self.ui.dir_check_pb.clicked.connect(self.dir_findCoordinateNPlot)
@@ -108,7 +111,7 @@ class MainUI(QMainWindow):
 
     def setup_joint_controls(self):
         dir_ranges = [
-            [-100, 100], [-90, 90], [-7200, 7200], [-180, 180]
+            [-100, 100], [-120, 120], [-7200, 7200], [-180, 180]
         ]
 
         theta_sliders = [
@@ -201,6 +204,7 @@ class MainUI(QMainWindow):
     #     self.plot_robot(result)
 
     def dir_findCoordinateNPlot(self):
+
         try:
             # Get values from the sliders/spin boxes
             j1_angle = radians(self.ui.j1_dir_theta.value())  # Convert degrees to radians
@@ -273,13 +277,18 @@ class MainUI(QMainWindow):
             QMessageBox.warning(self, 'Warning', 'Please use Solving first for J1 and J2')
             return
 
-        print(Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
-                                             desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4))
+        inv_run_result = Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3,
+                                             desiredAngle_J1, desiredAngle_J2, desiredAngle_J3, desiredAngle_J4)
+
+        self.display_run_results(inv_run_result, 1)
 
     def handle_direct_tab(self, desired_speed, desired_acc, desired_microStep):
         angles = [-self.ui.j1_dir_theta.value(), -self.ui.j2_dir_theta.value(),
                   self.ui.j3_dir_theta.value(), self.ui.j4_dir_theta.value()]
-        print(Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles))
+
+        dir_run_result = Motor_Control.semiAuto_motionActuate(desired_speed, desired_acc, desired_microStep, 3, *angles)
+
+        self.display_run_results(dir_run_result, 2)
 
     # Define other tab handlers here (manual, programmed, guided)
 
@@ -336,6 +345,8 @@ class MainUI(QMainWindow):
         self.ui.add_action_button.clicked.connect(self.add_programmed_action)
         self.ui.remove_action_button.clicked.connect(self.remove_programmed_action)
         self.ui.execute_programmed_button.clicked.connect(self.execute_programmed_actions)
+        self.ui.save_actions_button.clicked.connect(self.save_table_to_csv)  # Connect the save button
+        self.ui.load_actions_button.clicked.connect(self.load_csv_to_table)  # Connect the load button
 
     def add_programmed_action(self):
         # Add a new row to the programmed action table
@@ -407,8 +418,12 @@ class MainUI(QMainWindow):
         j3_rad = radians(j3)
         j4_rad = radians(j4)
 
+        # Update the plot with the new robot position (based on the direct kinematics result)
+        result = direct_kinematics(j1_rad, j2_rad, j3_rad, j4_rad, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
+        self.plot_robot(result)
+
         # Send commands to the robot
-        Motor_Control.semiAuto_motionActuate(
+        program_run_results = Motor_Control.semiAuto_motionActuate(
             speed= self.ui.desired_speed_adjust.value(),
             acc= self.ui.desired_acc_adjust.value(),
             micro=64,
@@ -418,10 +433,67 @@ class MainUI(QMainWindow):
             J3=j3,
             J4=j4
         )
+        self.display_run_results(program_run_results, 2)
 
-        # Update the plot with the new robot position (based on the direct kinematics result)
-        result = direct_kinematics(j1_rad, j2_rad,j3_rad,j4_rad, ARM1_LENGTH, ARM2_LENGTH, A1_WIDTH)
-        self.plot_robot(result)
+    def save_table_to_csv(self):
+        # Open a file dialog to select a save location
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save Programmed Actions", "", "CSV Files (*.csv)")
+        if not file_path:  # User canceled the save dialog
+            return
+
+        # Extract data from the table
+        try:
+            with open(file_path, mode='w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                # Write header row
+                headers = [self.ui.programmed_table.horizontalHeaderItem(col).text()
+                           for col in range(self.ui.programmed_table.columnCount())]
+                writer.writerow(headers)
+
+                # Write data rows
+                for row in range(self.ui.programmed_table.rowCount()):
+                    row_data = []
+                    for col in range(self.ui.programmed_table.columnCount()):
+                        item = self.ui.programmed_table.item(row, col)
+                        row_data.append(item.text() if item else "")  # Use empty string if no item exists
+                    writer.writerow(row_data)
+
+            QMessageBox.information(self, "Save Successful", f"Table data saved to {file_path}.")
+        except Exception as e:
+            QMessageBox.critical(self, "Save Error", f"Failed to save table data: {e}")
+
+    def load_csv_to_table(self):
+        # Open a file dialog to select a CSV file
+        file_path, _ = QFileDialog.getOpenFileName(self, "Load Programmed Actions", "", "CSV Files (*.csv)")
+        if not file_path:  # User canceled the dialog
+            return
+
+        try:
+            with open(file_path, mode='r') as csvfile:
+                reader = csv.reader(csvfile)
+                headers = next(reader)  # Read the header row
+
+                # Ensure the table matches the CSV column count
+                self.ui.programmed_table.setColumnCount(len(headers))
+                self.ui.programmed_table.setHorizontalHeaderLabels(headers)
+
+                # Clear any existing rows
+                self.ui.programmed_table.setRowCount(0)
+
+                # Populate the table with data rows
+                for row_data in reader:
+                    row_position = self.ui.programmed_table.rowCount()
+                    self.ui.programmed_table.insertRow(row_position)
+                    for col, value in enumerate(row_data):
+                        item = QTableWidgetItem(value)
+                        # Set flags to make the item editable
+                        item.setFlags(
+                            Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable)
+                        self.ui.programmed_table.setItem(row_position, col, item)
+
+            QMessageBox.information(self, "Load Successful", f"Table data loaded from {file_path}.")
+        except Exception as e:
+            QMessageBox.critical(self, "Load Error", f"Failed to load table data: {e}")
 
     def plot_robot(self, result):
         # Plot the SCARA robot's new position based on calculated coordinates
@@ -430,6 +502,53 @@ class MainUI(QMainWindow):
             result['tool_x'], result['tool_y'],
             *result['border_points']
         )
+
+    def display_run_results(self,result,mode):
+
+        self.ui.motor_angle_1.clear()
+        self.ui.motor_angle_2.clear()
+        self.ui.motor_angle_3.clear()
+        self.ui.motor_angle_4.clear()
+
+        ###########PROCESS J1###############
+        if mode == 1:  # inverse kinematics
+            if result["final_position_J1"] / 16384 * 360 / 3 > 360:
+                self.ui.motor_angle_1.setText(str(round(result["final_position_J1"] / 16384 * 360 / 3 - 360, 3)))
+            elif result["final_position_J1"] / 16384 * 360 / 3 < -360:
+                self.ui.motor_angle_1.setText(str(round(result["final_position_J1"] / 16384 * 360 / 3 + 360, 3)))
+            else:
+                self.ui.motor_angle_1.setText(str(round(result["final_position_J1"] / 16384 * 360 / 3, 3)))
+
+
+        elif mode == 2:  # direct kinematics
+            if result["final_position_J1"] / 16384 * 360 / 3 > 360:
+                self.ui.motor_angle_1.setText(str(-round(result["final_position_J1"] / 16384 * 360 / 3 - 360, 3)))
+            elif result["final_position_J1"] / 16384 * 360 / 3 < -360:
+                self.ui.motor_angle_1.setText(str(-round(result["final_position_J1"] / 16384 * 360 / 3 + 360, 3)))
+            else:
+                self.ui.motor_angle_1.setText(str(-round(result["final_position_J1"] / 16384 * 360 / 3, 3)))
+
+        ###########PROCESS J2###############
+        if mode == 1: # inverse kinematics
+            if result["final_position_J2"] / 16384 * 360 / 3 >360:
+                self.ui.motor_angle_2.setText(str(round(result["final_position_J2"] / 16384 * 360 / 3 - 360, 3)))
+            elif result["final_position_J2"] / 16384 * 360 / 3 < -360:
+                self.ui.motor_angle_2.setText(str(round(result["final_position_J2"] / 16384 * 360 / 3 + 360, 3)))
+            else:
+                self.ui.motor_angle_2.setText(str(round(result["final_position_J2"] / 16384 * 360 / 3, 3)))
+
+        elif mode == 2: # direct kinematics
+            if result["final_position_J2"] / 16384 * 360 / 3 > 360:
+                self.ui.motor_angle_2.setText(str(-round(result["final_position_J2"] / 16384 * 360 / 3 - 360, 3)))
+            elif result["final_position_J2"] / 16384 * 360 / 3 < -360:
+                self.ui.motor_angle_2.setText(str(-round(result["final_position_J2"] / 16384 * 360 / 3 + 360, 3)))
+            else:
+                self.ui.motor_angle_2.setText(str(-round(result["final_position_J2"] / 16384 * 360 / 3, 3)))
+
+
+
+        self.ui.motor_angle_3.setText(str(round(result["final_position_J3"] / 16384 * 360, 3)))
+        self.ui.motor_angle_4.setText(str(round(result["final_position_J4"] / 16384 * 360, 3)))
 
     def start_manual_move(self, joint, direction):
         """Start continuous motion of the given joint in the specified direction."""

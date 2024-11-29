@@ -38,7 +38,7 @@ def direct_kinematics(theta1, theta2, theta3, theta4, arm1_length, arm2_length, 
     tool_x = elbow_x + arm2_length * cos(adjusted_theta1 + adjusted_theta2)
     tool_y = elbow_y + arm2_length * sin(adjusted_theta1 + adjusted_theta2)
 
-    tool_z = theta3  # mapping theta3 to actual tool height
+    tool_z = degrees(theta3)/360  # mapping theta3 to actual tool height
     tool_r = theta4  # tool rotation
 
     # Calculate the arm border points using the adjusted theta1

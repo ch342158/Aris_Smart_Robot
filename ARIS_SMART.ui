@@ -1199,7 +1199,7 @@ QPushButton:pressed {
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -2136,7 +2136,7 @@ QPushButton:pressed {
            </size>
           </property>
          </widget>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>60</x>
@@ -2385,7 +2385,7 @@ QPushButton:pressed {
          <attribute name="title">
           <string>Programmed</string>
          </attribute>
-         <widget class="QWidget" name="">
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
             <x>40</x>
@@ -2455,24 +2455,37 @@ QPushButton:pressed {
          <widget class="QWidget" name="">
           <property name="geometry">
            <rect>
-            <x>160</x>
+            <x>40</x>
             <y>30</y>
-            <width>279</width>
-            <height>24</height>
+            <width>511</width>
+            <height>33</height>
            </rect>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_26">
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
-            <widget class="QRadioButton" name="radioButton">
+            <widget class="QPushButton" name="save_actions_button">
              <property name="text">
-              <string>Angle Input</string>
+              <string>SAVE Actions</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QRadioButton" name="radioButton_2">
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>78</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="load_actions_button">
              <property name="text">
-              <string>Coordinate Input</string>
+              <string>LOAD Actions</string>
              </property>
             </widget>
            </item>
@@ -2518,7 +2531,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
